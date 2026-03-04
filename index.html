@@ -437,6 +437,26 @@
               </ul>
           </li>
           <li>
+            <a href="#payments" class="toc-h1 toc-link" data-title="Payments">Payments</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#get-all-payments" class="toc-h2 toc-link" data-title="Get All Payments">Get All Payments</a>
+                  </li>
+                  <li>
+                    <a href="#get-a-specific-payment" class="toc-h2 toc-link" data-title="Get a Specific Payment">Get a Specific Payment</a>
+                  </li>
+                  <li>
+                    <a href="#add-a-payment" class="toc-h2 toc-link" data-title="Add a Payment">Add a Payment</a>
+                  </li>
+                  <li>
+                    <a href="#delete-a-payment" class="toc-h2 toc-link" data-title="Delete a Payment">Delete a Payment</a>
+                  </li>
+                  <li>
+                    <a href="#update-a-payment" class="toc-h2 toc-link" data-title="Update a Payment">Update a Payment</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#reports" class="toc-h1 toc-link" data-title="Reports">Reports</a>
               <ul class="toc-list-h2">
                   <li>
@@ -4601,7 +4621,182 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <td>The ID of the docmument to update</td>
 </tr>
 </tbody></table>
-<h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<h1 id='payments'>Payments</h1>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>payment_id</td>
+<td>integer</td>
+<td>Unique identifier for the payment. <code>[read-only]</code></td>
+</tr>
+<tr>
+<td>type</td>
+<td>integer</td>
+<td>Payment method ID.</td>
+</tr>
+<tr>
+<td>method</td>
+<td>string</td>
+<td>Payment method name.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>decimal</td>
+<td>Payment amount.</td>
+</tr>
+<tr>
+<td>date</td>
+<td>date</td>
+<td>Payment date (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td>comment</td>
+<td>string</td>
+<td>Optional free text comment.</td>
+</tr>
+<tr>
+<td>document_ids</td>
+<td>array</td>
+<td>Linked document IDs.</td>
+</tr>
+<tr>
+<td>zreport_id</td>
+<td>integer</td>
+<td>Linked Z-report id (<code>0</code> means none). <code>[read-only]</code></td>
+</tr>
+</tbody></table>
+<h2 id='get-all-payments'>Get All Payments</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments?limit=50&amp;page=1"</span> <span class="se">\</span>
+  <span class="nt">-X</span> GET <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"document_ids"</span><span class="p">:[</span><span class="mi">321</span><span class="p">,</span><span class="mi">322</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div>
+<p>This endpoint retrieves all payments.</p>
+<h3 id='https-request'>HTTPS Request</h3>
+<p><code>GET https://api.onlinefact.be/payments/</code></p>
+<h3 id='query-parameters'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>limit</td>
+<td>100</td>
+<td>Limit results (max 1000).</td>
+</tr>
+<tr>
+<td>page</td>
+<td>1</td>
+<td>Page number.</td>
+</tr>
+<tr>
+<td>document_id</td>
+<td></td>
+<td>Only payments linked to this document.</td>
+</tr>
+</tbody></table>
+<h2 id='get-a-specific-payment'>Get a Specific Payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
+  <span class="nt">-X</span> GET <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"document_ids"</span><span class="p">:[</span><span class="mi">321</span><span class="p">,</span><span class="mi">322</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h3 id='https-request-2'>HTTPS Request</h3>
+<p><code>GET https://api.onlinefact.be/payments/&lt;ID&gt;</code></p>
+<h2 id='add-a-payment'>Add a Payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/"</span> <span class="se">\</span>
+  <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'{
+        "document_id":321,
+        "type":2,
+        "amount":"34.60",
+        "date":"2026-03-04",
+        "comment":"Ticket 2026/24",
+        "document_ids":[322,330]
+      }'</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"document_ids"</span><span class="p">:[</span><span class="mi">321</span><span class="p">,</span><span class="mi">322</span><span class="p">,</span><span class="mi">330</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>This endpoint adds a payment and links it to the provided document.<br>
+Optional <code>document_ids</code> links the same payment to extra documents.</p>
+<h3 id='https-request-3'>HTTPS Request</h3>
+<p><code>POST https://api.onlinefact.be/payments/</code></p>
+<h2 id='delete-a-payment'>Delete a Payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
+  <span class="nt">-X</span> DELETE <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">245</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"deleted"</span><span class="p">:</span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>This endpoint deletes the full payment and all linked document/bank links.</p>
+<h3 id='https-request-4'>HTTPS Request</h3>
+<p><code>DELETE https://api.onlinefact.be/payments/&lt;ID&gt;</code></p>
+<h2 id='update-a-payment'>Update a Payment</h2>
+<p>Updating payments is intentionally not supported.</p>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
+  <span class="nt">-X</span> PUT <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'{"amount":"10.00"}'</span>
+</code></pre></div><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"success"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"error"</span><span class="p">:</span><span class="s2">"Update payment is not supported"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div><h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/reports/saletotals/?min_date=2022-07-27&amp;max_date=2022-07-28'</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
