@@ -72,6 +72,26 @@ Deze bestaan in code en moeten expliciet gedocumenteerd of bewust intern gehoude
 4. Verifieer parameters, responsevelden en foutcases.
 5. Controleer `source/index.html.md` includes voor nieuwe secties.
 
+## Payments contract notes (canoniek)
+
+Deze afspraken zijn expliciet vastgelegd en moeten consistent blijven tussen code en docs:
+
+- `PUT /payments/<ID>` wordt niet gedocumenteerd als werkende endpoint (update-flow is niet ondersteund).
+- `POST /payments/` gebruikt `document_id` als input; expliciete multi-link input via `document_ids` is verwijderd.
+- Als `POST` geen `date` bevat, gebruikt de API automatisch de huidige datum (`Y-m-d`).
+- Payment responses geven gekoppelde documenten terug onder `documents` (object), met document-id als key.
+- Elke `documents` entry bevat minstens:
+  - `document_id`
+  - `document_type`
+  - `document_number`
+  - `customer_ref`
+  - `customer_name`
+  - `document_date`
+- `GET /payments/` ondersteunt filtering/sortering via:
+  - filters: `document_id`, `type`, `date`, `min_date`, `max_date`
+  - sorting: `order_by` (`payment_id|date|type|amount`) en `order_dir` (`ASC|DESC`)
+- Z-report koppeling (`zreport_id`) is verwijderd uit het payments endpoint contract.
+
 ## Release-gate voor API changes
 
 Een API wijziging is niet klaar wanneer:
