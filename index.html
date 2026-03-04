@@ -451,9 +451,6 @@
                   <li>
                     <a href="#delete-a-payment" class="toc-h2 toc-link" data-title="Delete a Payment">Delete a Payment</a>
                   </li>
-                  <li>
-                    <a href="#update-a-payment" class="toc-h2 toc-link" data-title="Update a Payment">Update a Payment</a>
-                  </li>
               </ul>
           </li>
           <li>
@@ -5120,45 +5117,7 @@ Response returns linked documents in `documents`.
 <td>The ID of the payment to delete.</td>
 </tr>
 </tbody></table>
-<h2 id='update-a-payment'>Update a Payment</h2>
-<p>Updating payments is intentionally not supported.</p>
-<div class="highlight"><pre class="highlight php tab-php"><code>
-<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
-<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
-<span class="nv">$payment_id</span> <span class="o">=</span> <span class="mi">245</span><span class="p">;</span>
-
-<span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
-   "amount":"10.00"
-}'</span><span class="p">;</span> <span class="c1">// JSON String</span>
-
-<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/'</span><span class="mf">.</span><span class="nv">$payment_id</span><span class="mf">.</span><span class="s1">'/'</span><span class="p">);</span>
-<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"PUT"</span><span class="p">);</span>
-<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_POSTFIELDS</span><span class="p">,</span> <span class="nv">$data_string</span><span class="p">);</span>
-<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
-<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
-<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
-<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
-<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
-
-<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
-
-<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
-  <span class="nt">-X</span> PUT <span class="se">\</span>
-  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-  <span class="nt">-d</span> <span class="s1">'{
-      "amount":"10.00"
-   }'</span>
-</code></pre></div>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-   </span><span class="nl">"success"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
-   </span><span class="nl">"error"</span><span class="p">:</span><span class="s2">"Update payment is not supported"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div><h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/reports/saletotals/?min_date=2022-07-27&amp;max_date=2022-07-28'</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
