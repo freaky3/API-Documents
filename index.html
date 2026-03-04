@@ -4660,11 +4660,6 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <td>Comment of payment.</td>
 </tr>
 <tr>
-<td>zreport_id</td>
-<td>integer</td>
-<td>Z-report id when linked (<code>0</code> when not linked). <code>[read-only]</code></td>
-</tr>
-<tr>
 <td>documents</td>
 <td>object</td>
 <td>Linked documents for this payment. Key is the document id.</td>
@@ -4777,7 +4772,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
 <span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
 
-<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/?limit=2&amp;page=1'</span><span class="p">);</span>
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/?limit=2&amp;page=1&amp;order_by=date&amp;order_dir=desc&amp;type=2'</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
@@ -4788,7 +4783,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
 
 <span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/?limit=2&amp;page=1"</span> <span class="se">\</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/?limit=2&amp;page=1&amp;order_by=date&amp;order_dir=desc&amp;type=2"</span> <span class="se">\</span>
   <span class="nt">-X</span> GET <span class="se">\</span>
   <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
@@ -4804,7 +4799,6 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
       </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
          </span><span class="nl">"321"</span><span class="p">:{</span><span class="w">
             </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">321</span><span class="p">,</span><span class="w">
@@ -4831,7 +4825,6 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
       </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"120.00"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Invoice 2026/101"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
          </span><span class="nl">"410"</span><span class="p">:{</span><span class="w">
             </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">410</span><span class="p">,</span><span class="w">
@@ -4871,6 +4864,36 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <td></td>
 <td>only payments linked to this document id.</td>
 </tr>
+<tr>
+<td>type</td>
+<td></td>
+<td>only payments with this payment type id.</td>
+</tr>
+<tr>
+<td>date</td>
+<td></td>
+<td>only payments on this date (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td>min_date</td>
+<td></td>
+<td>minimum payment date (<code>YYYY-MM-DD</code>) when <code>date</code> is not set.</td>
+</tr>
+<tr>
+<td>max_date</td>
+<td></td>
+<td>maximum payment date (<code>YYYY-MM-DD</code>) when <code>date</code> is not set.</td>
+</tr>
+<tr>
+<td>order_by</td>
+<td>payment_id</td>
+<td>sort by <code>payment_id</code>, <code>date</code>, <code>type</code> or <code>amount</code>.</td>
+</tr>
+<tr>
+<td>order_dir</td>
+<td>ASC</td>
+<td>sort direction <code>ASC</code> or <code>DESC</code>.</td>
+</tr>
 </tbody></table>
 <h2 id='get-a-specific-payment'>Get a Specific Payment</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
@@ -4903,7 +4926,6 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
    </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
-   </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
       </span><span class="nl">"321"</span><span class="p">:{</span><span class="w">
          </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">321</span><span class="p">,</span><span class="w">
@@ -4985,7 +5007,6 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
    </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
-   </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
       </span><span class="nl">"321"</span><span class="p">:{</span><span class="w">
          </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">321</span><span class="p">,</span><span class="w">
