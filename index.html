@@ -4637,12 +4637,12 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <tr>
 <td>type</td>
 <td>integer</td>
-<td>Payment method ID.</td>
+<td>ID of payment method.</td>
 </tr>
 <tr>
 <td>method</td>
 <td>string</td>
-<td>Payment method name.</td>
+<td>Name of payment method.</td>
 </tr>
 <tr>
 <td>amount</td>
@@ -4652,43 +4652,189 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <tr>
 <td>date</td>
 <td>date</td>
-<td>Payment date (<code>YYYY-MM-DD</code>).</td>
+<td>Date of payment (<code>YYYY-MM-DD</code>).</td>
 </tr>
 <tr>
 <td>comment</td>
 <td>string</td>
-<td>Optional free text comment.</td>
-</tr>
-<tr>
-<td>document_ids</td>
-<td>array</td>
-<td>Linked document IDs.</td>
+<td>Comment of payment.</td>
 </tr>
 <tr>
 <td>zreport_id</td>
 <td>integer</td>
-<td>Linked Z-report id (<code>0</code> means none). <code>[read-only]</code></td>
+<td>Z-report id when linked (<code>0</code> when not linked). <code>[read-only]</code></td>
+</tr>
+<tr>
+<td>documents</td>
+<td>object</td>
+<td>Linked documents for this payment. Key is the document id.</td>
 </tr>
 </tbody></table>
-<h2 id='get-all-payments'>Get All Payments</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments?limit=50&amp;page=1"</span> <span class="se">\</span>
+
+<p><strong>Payments - types</strong></p>
+
+<table><thead>
+<tr>
+<th>Type ID</th>
+<th>Payment method</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>1</td>
+<td>Not payd</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cash</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Banktransfer</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Creditcard</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Cheque</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Bancontact</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Webshop</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Paypal</td>
+</tr>
+<tr>
+<td>99</td>
+<td>Voucher</td>
+</tr>
+</tbody></table>
+
+<p><strong>Payments - documents</strong></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>{document_id}</td>
+<td>object</td>
+<td>Document details for this linked document.</td>
+</tr>
+</tbody></table>
+
+<p><strong>Payments - documents object</strong></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>document_id</td>
+<td>integer</td>
+<td>Document id.</td>
+</tr>
+<tr>
+<td>document_type</td>
+<td>integer</td>
+<td>Document type id.</td>
+</tr>
+<tr>
+<td>customer_ref</td>
+<td>string</td>
+<td>Customer reference from document.</td>
+</tr>
+<tr>
+<td>customer_name</td>
+<td>string</td>
+<td>Customer name from document.</td>
+</tr>
+<tr>
+<td>document_date</td>
+<td>date</td>
+<td>Document date (<code>YYYY-MM-DD</code>).</td>
+</tr>
+</tbody></table>
+<h2 id='get-all-payments'>Get All Payments</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/?limit=2&amp;page=1'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/?limit=2&amp;page=1"</span> <span class="se">\</span>
   <span class="nt">-X</span> GET <span class="se">\</span>
   <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"document_ids"</span><span class="p">:[</span><span class="mi">321</span><span class="p">,</span><span class="mi">322</span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"321"</span><span class="p">:{</span><span class="w">
+            </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">321</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0001"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Demo Customer"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+         </span><span class="p">},</span><span class="w">
+         </span><span class="nl">"322"</span><span class="p">:{</span><span class="w">
+            </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">322</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0001"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Demo Customer"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+         </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">},</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"246"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Banktransfer"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"120.00"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Invoice 2026/101"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"410"</span><span class="p">:{</span><span class="w">
+            </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">410</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0101"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Example NV"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+         </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div>
 <p>This endpoint retrieves all payments.</p>
@@ -4705,96 +4851,286 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <tr>
 <td>limit</td>
 <td>100</td>
-<td>Limit results (max 1000).</td>
+<td>limit results (max 1000).</td>
 </tr>
 <tr>
 <td>page</td>
 <td>1</td>
-<td>Page number.</td>
+<td>page number of result.</td>
 </tr>
 <tr>
 <td>document_id</td>
 <td></td>
-<td>Only payments linked to this document.</td>
+<td>only payments linked to this document id.</td>
 </tr>
 </tbody></table>
-<h2 id='get-a-specific-payment'>Get a Specific Payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
+<h2 id='get-a-specific-payment'>Get a Specific Payment</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+<span class="nv">$payment_id</span> <span class="o">=</span> <span class="mi">245</span><span class="p">;</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/'</span><span class="mf">.</span><span class="nv">$payment_id</span><span class="mf">.</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
   <span class="nt">-X</span> GET <span class="se">\</span>
   <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"document_ids"</span><span class="p">:[</span><span class="mi">321</span><span class="p">,</span><span class="mi">322</span><span class="p">]</span><span class="w">
+   </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
+      </span><span class="nl">"321"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">321</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0001"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Demo Customer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"322"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">322</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0001"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Demo Customer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre></div><h3 id='https-request-2'>HTTPS Request</h3>
+</span></code></pre></div>
+<p>This endpoint retrieves a specific payment.</p>
+<h3 id='https-request-2'>HTTPS Request</h3>
 <p><code>GET https://api.onlinefact.be/payments/&lt;ID&gt;</code></p>
-<h2 id='add-a-payment'>Add a Payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/"</span> <span class="se">\</span>
+<h3 id='url-parameters'>URL Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ID</td>
+<td>The ID of the payment to retrieve.</td>
+</tr>
+</tbody></table>
+<h2 id='add-a-payment'>Add a Payment</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+
+<span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
+   "document_id":321,
+   "type":2,
+   "amount":"34.60",
+   "date":"2026-03-04",
+   "comment":"Ticket 2026/24",
+   "document_ids":[322,330]
+}'</span><span class="p">;</span> <span class="c1">// JSON String</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"POST"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_POSTFIELDS</span><span class="p">,</span> <span class="nv">$data_string</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/"</span> <span class="se">\</span>
   <span class="nt">-X</span> POST <span class="se">\</span>
   <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
-        "document_id":321,
-        "type":2,
-        "amount":"34.60",
-        "date":"2026-03-04",
-        "comment":"Ticket 2026/24",
-        "document_ids":[322,330]
-      }'</span>
+      "document_id":321,
+      "type":2,
+      "amount":"34.60",
+      "date":"2026-03-04",
+      "comment":"Ticket 2026/24",
+      "document_ids":[322,330]
+   }'</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"document_ids"</span><span class="p">:[</span><span class="mi">321</span><span class="p">,</span><span class="mi">322</span><span class="p">,</span><span class="mi">330</span><span class="p">]</span><span class="w">
+   </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="s2">"245"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"type"</span><span class="p">:</span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"method"</span><span class="p">:</span><span class="s2">"Cash"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"34.60"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"comment"</span><span class="p">:</span><span class="s2">"Ticket 2026/24"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"zreport_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"documents"</span><span class="p">:{</span><span class="w">
+      </span><span class="nl">"321"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">321</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0001"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Demo Customer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"322"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">322</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"C0001"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Demo Customer"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"330"</span><span class="p">:{</span><span class="w">
+         </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">330</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_ref"</span><span class="p">:</span><span class="s2">"REG"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"customer_name"</span><span class="p">:</span><span class="s2">"Cash Register"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"document_date"</span><span class="p">:</span><span class="s2">"2026-03-04"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint adds a payment and links it to the provided document.<br>
-Optional <code>document_ids</code> links the same payment to extra documents.</p>
+<p>This endpoint adds a payment.</p>
 <h3 id='https-request-3'>HTTPS Request</h3>
 <p><code>POST https://api.onlinefact.be/payments/</code></p>
-<h2 id='delete-a-payment'>Delete a Payment</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
+<h3 id='body-parameters'>Body Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>document_id</td>
+<td>yes</td>
+<td>main document where payment is created on.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>yes</td>
+<td>payment method id.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>yes</td>
+<td>payment amount.</td>
+</tr>
+<tr>
+<td>date</td>
+<td>yes</td>
+<td>payment date (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td>comment</td>
+<td>no</td>
+<td>custom comment.</td>
+</tr>
+<tr>
+<td>document_ids</td>
+<td>no</td>
+<td>extra linked document ids.</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+`document_ids` is optional input for linking to extra documents.  
+Response always returns the linked documents in `documents`.
+</aside>
+<h2 id='delete-a-payment'>Delete a Payment</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+<span class="nv">$payment_id</span> <span class="o">=</span> <span class="mi">245</span><span class="p">;</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/'</span><span class="mf">.</span><span class="nv">$payment_id</span><span class="mf">.</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"DELETE"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
   <span class="nt">-X</span> DELETE <span class="se">\</span>
   <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">245</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"deleted"</span><span class="p">:</span><span class="mi">1</span><span class="w">
+   </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">245</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"deleted"</span><span class="p">:</span><span class="mi">1</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
 <p>This endpoint deletes the full payment and all linked document/bank links.</p>
 <h3 id='https-request-4'>HTTPS Request</h3>
 <p><code>DELETE https://api.onlinefact.be/payments/&lt;ID&gt;</code></p>
+<h3 id='url-parameters-2'>URL Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ID</td>
+<td>The ID of the payment to delete.</td>
+</tr>
+</tbody></table>
 <h2 id='update-a-payment'>Update a Payment</h2>
 <p>Updating payments is intentionally not supported.</p>
-<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
+<div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+<span class="nv">$payment_id</span> <span class="o">=</span> <span class="mi">245</span><span class="p">;</span>
+
+<span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
+   "amount":"10.00"
+}'</span><span class="p">;</span> <span class="c1">// JSON String</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/payments/'</span><span class="mf">.</span><span class="nv">$payment_id</span><span class="mf">.</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"PUT"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_POSTFIELDS</span><span class="p">,</span> <span class="nv">$data_string</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/payments/245/"</span> <span class="se">\</span>
   <span class="nt">-X</span> PUT <span class="se">\</span>
   <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-  <span class="nt">-d</span> <span class="s1">'{"amount":"10.00"}'</span>
-</code></pre></div><div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"success"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"error"</span><span class="p">:</span><span class="s2">"Update payment is not supported"</span><span class="w">
+  <span class="nt">-d</span> <span class="s1">'{
+      "amount":"10.00"
+   }'</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="nl">"success"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"error"</span><span class="p">:</span><span class="s2">"Update payment is not supported"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div><h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/reports/saletotals/?min_date=2022-07-27&amp;max_date=2022-07-28'</span><span class="p">);</span>
