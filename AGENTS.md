@@ -2,6 +2,12 @@
 
 Deze repository bevat de bron van de API-documentatie voor `https://api.onlinefact.be`.
 
+## Systeemcontext
+
+- `api_onlinefact` blijft de contractbron voor endpoints.
+- `worker_onlinefact` is een aparte background worker voor asynchrone queue-verwerking (`sync_queue`) van webshopkoppelingen.
+- Wijzigingen in API-contracten die worker-gedrag of payloads beïnvloeden, moeten in Slate expliciet en consistent gedocumenteerd worden.
+
 ## Bronstructuur
 
 - Hoofdnavigatie en include-volgorde: `source/index.html.md`
