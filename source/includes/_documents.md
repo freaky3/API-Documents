@@ -391,8 +391,8 @@ This endpoint retrieves all documents.
 
 Parameter | Default | Description
 --------- | ------- | -----------
-min_date | date | Return documents for a specific start date, the date need to be in the YYYY-MM-DD format `[optional]`
-max_date | date | Return documents for a specific end date, the date need to be in the YYYY-MM-DD format `[optional]`
+min_date | date | Return documents from this start date (YYYY-MM-DD)
+max_date | date | Return documents until this end date (YYYY-MM-DD)
 document_type | integer |1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket
 from_document_id | integer | Return documents from this document_id
 from_datemodified | integer | Return documents from this timestamp `unix timestamp format`
