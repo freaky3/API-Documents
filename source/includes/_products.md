@@ -15,6 +15,7 @@ purchaseprice_excl | decimal | Purchase price excl VAT
 costprice_excl | decimal | Cost price excl VAT (Average purchase price of items in stock)
 stock | decimal | amount of inventory
 stock_comment | string | comment for stock change
+stock_minimum | decimal | minimum stock level of the product
 capacity | decimal | capacity value of the product
 capacity_unit | string | unit of capacity value (KG,g,ml,L,oz,lb)
 categorie_id | integer | primary category ID
@@ -181,6 +182,7 @@ curl "https://api.onlinefact.be/products" \
     "tax": "6.0",
     "price_incl": "3.50",
     "stock": "-27.00",
+    "stock_minimum": "5.00",
     "capacity": "0.280",
     "capacity_unit": "KG",
     "categorie_id": "155",
@@ -274,6 +276,7 @@ curl "https://api.onlinefact.be/products" \
     "tax": "21.0",
     "price_incl": "29.95",
     "stock": "-1.00",
+    "stock_minimum": "0.00",
     "capacity": "0.000",
     "capacity_unit": "",
     "categorie_id": "0",
@@ -441,6 +444,7 @@ curl "https://api.onlinefact.be/products/8/" \
   "tax": "6.0",
   "price_incl": "3.50",
   "stock": "-27.00",
+  "stock_minimum": "5.00",
   "capacity": "0.280",
   "capacity_unit": "KG",
   "categorie_id": "155",
@@ -583,6 +587,7 @@ curl "https://api.onlinefact.be/products/" \
   "tax": "6.0",
   "price_incl": "3.50",
   "stock": "0",
+  "stock_minimum": "0.00",
   "capacity": "0.280",
   "capacity_unit": "KG",
   "categorie_id": "155",
@@ -669,6 +674,7 @@ curl "https://api.onlinefact.be/products/8/" \
   "tax": "6.0",
   "price_incl": "3.50",
   "stock": "-27.00",
+  "stock_minimum": "5.00",
   "capacity": "0.280",
   "capacity_unit": "KG",
   "categorie_id": "155",
