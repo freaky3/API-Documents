@@ -605,6 +605,11 @@ When you create a new API key and secret you have to write down the API secret b
 <td>comment for stock change</td>
 </tr>
 <tr>
+<td>stock_minimum</td>
+<td>decimal</td>
+<td>minimum stock level of the product</td>
+</tr>
+<tr>
 <td>capacity</td>
 <td>decimal</td>
 <td>capacity value of the product</td>
@@ -1094,6 +1099,7 @@ When you create a new API key and secret you have to write down the API secret b
     </span><span class="nl">"tax"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.0"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"price_incl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.50"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-27.00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stock_minimum"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.00"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"capacity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.280"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"capacity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"KG"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"categorie_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"155"</span><span class="p">,</span><span class="w">
@@ -1187,6 +1193,7 @@ When you create a new API key and secret you have to write down the API secret b
     </span><span class="nl">"tax"</span><span class="p">:</span><span class="w"> </span><span class="s2">"21.0"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"price_incl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"29.95"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-1.00"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"stock_minimum"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"capacity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.000"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"capacity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
     </span><span class="nl">"categorie_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
@@ -1398,6 +1405,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"tax"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"price_incl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.50"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-27.00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"stock_minimum"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"capacity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.280"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"capacity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"KG"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"categorie_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"155"</span><span class="p">,</span><span class="w">
@@ -1535,6 +1543,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"tax"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"price_incl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.50"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"stock_minimum"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"capacity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.280"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"capacity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"KG"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"categorie_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"155"</span><span class="p">,</span><span class="w">
@@ -1615,6 +1624,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"tax"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"price_incl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.50"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"stock"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-27.00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"stock_minimum"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"capacity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.280"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"capacity_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"KG"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"categorie_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"155"</span><span class="p">,</span><span class="w">
