@@ -37,3 +37,38 @@ barcodes | array | Barcodes
 staffels | array | Price tiers
 extra | array | Extra products/components
 
+## Customers sync
+
+### HTTPS Request
+
+`GET https://api.onlinefact.be/kassa.php?data=customers`
+
+### Query Parameters
+
+Parameter | Type | Description
+--------- | ------- | -----------
+from_timestamp | integer | Only return customers modified after this UNIX timestamp (seconds). Use `0` or empty for initial sync.
+limit | integer | Optional limit on the number of returned customers.
+version | string/decimal | Client version used for backwards compatibility rules.
+
+### Result Parameters (per customer)
+
+Parameter | Type | Description
+--------- | ------- | -----------
+custid | integer | Customer id
+custref | string | Customer reference
+custname1 | string | Name or company
+custbarcode | string | Barcode of the loyalty card
+custexcludeloyalty | string | `"1"` = customer is excluded from earning loyalty points/credit (existing balance can still be redeemed); `"0"` = normal (default)
+points | integer | Current loyalty points balance
+invoicemail | string | `"1"` = send invoices by email
+datemodified | integer | UNIX timestamp of last modification
+
+<aside class="notice">Only the loyalty-specific field is documented here in full; the customers sync returns the same address/contact fields as the rest of the customer model.</aside>
+
+### Up-sync (POST)
+
+`POST https://api.onlinefact.be/kassa.php`
+
+The POS can push customer changes back to the server. Each customer object in the payload may include `custexcludeloyalty` (`0`|`1`). When the field is omitted (older POS versions), the server keeps the value at `0`. When `custexcludeloyalty = 1`, the server skips earning new loyalty points/credit for that customer's tickets, while redeeming an existing balance stays possible.
+

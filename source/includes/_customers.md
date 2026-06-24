@@ -23,6 +23,7 @@ expirationdays | integer | Default days when document expires
 discount | decimal | fixed discount percentage on all products
 barcode | string | barcode of the loyalty card
 loyalty_points | integer | number of loyalty points collected
+exclude_loyalty_earning | integer | 1 = customer is excluded from earning loyalty points/credit (existing balance can still be redeemed); 0 = normal (default)
 delivery_name | string | Delivery address name
 delivery_address | string | Delivery address
 delivery_zip | string | Delivery address zip
@@ -80,6 +81,7 @@ curl "https://api.onlinefact.be/customers" \
     "discount":"0.00",
     "barcode":"1000123",
 	"loyalty_points":10,
+	"exclude_loyalty_earning":0,
     "delivery_name":"",
     "delivery_address":"",
     "delivery_zip":"",
@@ -107,6 +109,7 @@ curl "https://api.onlinefact.be/customers" \
     "discount":"0.00",
     "barcode":"1000124",
 	"loyalty_points":35,
+	"exclude_loyalty_earning":1,
     "delivery_name":null,
     "delivery_address":null,
     "delivery_zip":null,
@@ -184,6 +187,7 @@ curl "https://api.onlinefact.be/customers/23/" \
   "discount":"0.00",
   "barcode":"1000123",
   "loyalty_points":10,
+  "exclude_loyalty_earning":0,
   "delivery_name":"",
   "delivery_address":"",
   "delivery_zip":"",
@@ -280,6 +284,7 @@ curl "https://api.onlinefact.be/customers/" \
   "expirationdays":"14",
   "discount":"0.00",
   "barcode":"1000123",
+  "exclude_loyalty_earning":0,
   "delivery_name":"",
   "delivery_address":"",
   "delivery_zip":"",
@@ -309,7 +314,8 @@ $data_string = '{
                   "address":"Kerkstraat 123",
                   "zip":"1000",
                   "city":"Brussels",
-				  "loyalty_points":{"action":"add","amount":10}
+				  "loyalty_points":{"action":"add","amount":10},
+				  "exclude_loyalty_earning":1
                 }'; //JSON String
 
 $ch = curl_init("https://api.onlinefact.be/customers/23/");
@@ -335,7 +341,8 @@ curl "https://api.onlinefact.be/customers/23/" \
         "address":"Kerkstraat 123",
         "zip":"1000",
         "city":"Brussels",
-		"loyalty_points":{"action":"add","amount":10}
+		"loyalty_points":{"action":"add","amount":10},
+		"exclude_loyalty_earning":1
       }'
 ```
 
@@ -363,6 +370,7 @@ curl "https://api.onlinefact.be/customers/23/" \
   "discount":"0.00",
   "barcode":"1000123",
   "loyalty_points":"10",
+  "exclude_loyalty_earning":1,
   "delivery_name":"",
   "delivery_address":"",
   "delivery_zip":"",
