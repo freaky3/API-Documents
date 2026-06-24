@@ -2646,6 +2646,11 @@ When you create a new API key and secret you have to write down the API secret b
 <td>number of loyalty points collected</td>
 </tr>
 <tr>
+<td>exclude_loyalty_earning</td>
+<td>integer</td>
+<td>1 = customer is excluded from earning loyalty points/credit (existing balance can still be redeemed); 0 = normal (default)</td>
+</tr>
+<tr>
 <td>delivery_name</td>
 <td>string</td>
 <td>Delivery address name</td>
@@ -2718,6 +2723,7 @@ When you create a new API key and secret you have to write down the API secret b
     </span><span class="nl">"discount"</span><span class="p">:</span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"1000123"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"loyalty_points"</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"exclude_loyalty_earning"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
     </span><span class="nl">"delivery_name"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
     </span><span class="nl">"delivery_address"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
     </span><span class="nl">"delivery_zip"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
@@ -2745,6 +2751,7 @@ When you create a new API key and secret you have to write down the API secret b
     </span><span class="nl">"discount"</span><span class="p">:</span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"1000124"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"loyalty_points"</span><span class="p">:</span><span class="mi">35</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"exclude_loyalty_earning"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
     </span><span class="nl">"delivery_name"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
     </span><span class="nl">"delivery_address"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
     </span><span class="nl">"delivery_zip"</span><span class="p">:</span><span class="kc">null</span><span class="p">,</span><span class="w">
@@ -2851,6 +2858,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"discount"</span><span class="p">:</span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"1000123"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"loyalty_points"</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"exclude_loyalty_earning"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_name"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_address"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_zip"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
@@ -2941,6 +2949,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"expirationdays"</span><span class="p">:</span><span class="s2">"14"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"discount"</span><span class="p">:</span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"1000123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"exclude_loyalty_earning"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_name"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_address"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_zip"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
@@ -2968,7 +2977,8 @@ When you create a new API key and secret you have to write down the API secret b
                   "address":"Kerkstraat 123",
                   "zip":"1000",
                   "city":"Brussels",
-                  "loyalty_points":{"action":"add","amount":10}
+                  "loyalty_points":{"action":"add","amount":10},
+                  "exclude_loyalty_earning":1
                 }'</span><span class="p">;</span> <span class="c1">//JSON String</span>
 
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s2">"https://api.onlinefact.be/customers/23/"</span><span class="p">);</span>
@@ -2991,7 +3001,8 @@ When you create a new API key and secret you have to write down the API secret b
         "address":"Kerkstraat 123",
         "zip":"1000",
         "city":"Brussels",
-        "loyalty_points":{"action":"add","amount":10}
+        "loyalty_points":{"action":"add","amount":10},
+        "exclude_loyalty_earning":1
       }'</span>
 </code></pre></div>
 <blockquote>
@@ -3018,6 +3029,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"discount"</span><span class="p">:</span><span class="s2">"0.00"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"1000123"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"loyalty_points"</span><span class="p">:</span><span class="s2">"10"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"exclude_loyalty_earning"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_name"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_address"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
   </span><span class="nl">"delivery_zip"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
