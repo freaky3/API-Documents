@@ -566,7 +566,8 @@ $data_string = '{
                      "description":"Menthos White 25 pack",
                      "price_vatexcl":5.6132,
                      "tax":6,
-                     "discount":0
+                     "discount":0,
+                     "unit":"ST"
                      },
                      {
                      "reference":"LAYSPAP30",
@@ -613,7 +614,8 @@ curl "https://api.onlinefact.be/documents/" \
             "description":"Menthos White 25 pack",
             "price_vatexcl":5.6132,
             "tax":6,
-            "discount":0
+            "discount":0,
+            "unit":"ST"
             },
             {
             "reference":"LAYSPAP30",
@@ -775,6 +777,7 @@ price_vatexcl | unit price excl TAX
 tax | tax of this line
 discount | discount on this line
 delivered | number of items picked *(only for document_type = 2)*
+unit | unit name *(must match an existing unit; the matching unit_multiplier is applied automatically)*
 
 ## Update a Document
 
@@ -898,7 +901,7 @@ curl "https://api.onlinefact.be/documents/475/" \
          "quantity":3,                             //Update possible
          "delivered":0,                            //Update possible
          "alreadydelivered":0,
-         "unit":"ST",
+         "unit":"ST",                               //Update possible
          "unit_multiplier":"1.000000",
          "parent":"0",
          "tax":6,                                  //Update possible
@@ -920,7 +923,7 @@ curl "https://api.onlinefact.be/documents/475/" \
          "quantity":2,                             //Update possible
          "delivered":1,                            //Update possible
          "alreadydelivered":0,
-         "unit":"",
+         "unit":"",                                 //Update possible
          "unit_multiplier":"1.000000",
          "parent":"0",
          "tax":6,                                  //Update possible
