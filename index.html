@@ -4484,7 +4484,8 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
                      "description":"Menthos White 25 pack",
                      "price_vatexcl":5.6132,
                      "tax":6,
-                     "discount":0
+                     "discount":0,
+                     "unit":"ST"
                      },
                      {
                      "reference":"LAYSPAP30",
@@ -4528,7 +4529,8 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
             "description":"Menthos White 25 pack",
             "price_vatexcl":5.6132,
             "tax":6,
-            "discount":0
+            "discount":0,
+            "unit":"ST"
             },
             {
             "reference":"LAYSPAP30",
@@ -4738,6 +4740,10 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <td>delivered</td>
 <td>number of items picked <em>(only for document_type = 2)</em></td>
 </tr>
+<tr>
+<td>unit</td>
+<td>unit name <em>(must match an existing unit; the matching unit_multiplier is applied automatically)</em></td>
+</tr>
 </tbody></table>
 <h2 id='update-a-document'>Update a Document</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
@@ -4854,7 +4860,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
          </span><span class="nl">"quantity"</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="w">                             </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
          </span><span class="nl">"delivered"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">                            </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
          </span><span class="nl">"alreadydelivered"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
-         </span><span class="nl">"unit"</span><span class="p">:</span><span class="s2">"ST"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"unit"</span><span class="p">:</span><span class="s2">"ST"</span><span class="p">,</span><span class="w">                               </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
          </span><span class="nl">"unit_multiplier"</span><span class="p">:</span><span class="s2">"1.000000"</span><span class="p">,</span><span class="w">
          </span><span class="nl">"parent"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
          </span><span class="nl">"tax"</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="w">                                  </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
@@ -4876,7 +4882,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
          </span><span class="nl">"quantity"</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="w">                             </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
          </span><span class="nl">"delivered"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">                            </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
          </span><span class="nl">"alreadydelivered"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
-         </span><span class="nl">"unit"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"unit"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="w">                                 </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
          </span><span class="nl">"unit_multiplier"</span><span class="p">:</span><span class="s2">"1.000000"</span><span class="p">,</span><span class="w">
          </span><span class="nl">"parent"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
          </span><span class="nl">"tax"</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="w">                                  </span><span class="err">//Update</span><span class="w"> </span><span class="err">possible</span><span class="w">
