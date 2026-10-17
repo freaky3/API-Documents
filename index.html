@@ -732,7 +732,7 @@ When you create a new API key and secret you have to write down the API secret b
 <tr>
 <td>attributes</td>
 <td>array</td>
-<td></td>
+<td>Option variants (<code>product_type</code> 3). On POST this creates option products. On PUT this replaces the full option set of the product.</td>
 </tr>
 <tr>
 <td>discount</td>
@@ -865,6 +865,8 @@ When you create a new API key and secret you have to write down the API secret b
 
 <p><strong>Products - attributes</strong></p>
 
+<p>On POST, include <code>attributes</code> to create a product with options (<code>product_type</code> 3). Each item becomes a variant with SKU <code>reference</code> + account option delimiter + option reference(s). On PUT, <code>attributes</code> replaces the complete option set: missing variants are removed (when not used on documents), new ones are created, existing ones are updated. A normal product (<code>product_type</code> 1) is converted to an option product when <code>attributes</code> is sent.</p>
+
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -875,12 +877,12 @@ When you create a new API key and secret you have to write down the API secret b
 <tr>
 <td>product_id</td>
 <td>integer</td>
-<td>Unique identifier for the resource. <code>[read-only]</code></td>
+<td>Unique identifier of the variant. <code>[read-only]</code> on GET. Optional on PUT to match an existing variant.</td>
 </tr>
 <tr>
 <td>reference</td>
 <td>string</td>
-<td>Unique SKU</td>
+<td>Unique SKU of the variant <code>[read-only]</code></td>
 </tr>
 <tr>
 <td>reference2</td>
@@ -890,32 +892,32 @@ When you create a new API key and secret you have to write down the API secret b
 <tr>
 <td>barcode</td>
 <td>string</td>
-<td>the barcode of the product, can be EAN13 of any other type</td>
+<td>barcode of this variant</td>
 </tr>
 <tr>
 <td>stock</td>
 <td>decimal</td>
-<td>amount of inventory</td>
+<td>inventory of this variant</td>
 </tr>
 <tr>
 <td>addprice</td>
 <td>decimal</td>
-<td>price difference</td>
+<td>price difference vs the parent <code>price_excl</code></td>
 </tr>
 <tr>
 <td>webshop</td>
 <td>boolean</td>
-<td>may this product be visible on webshop</td>
+<td>may this variant be visible on webshop</td>
 </tr>
 <tr>
 <td>dropship</td>
 <td>boolean</td>
-<td>webshop has always stock of this product</td>
+<td>webshop has always stock of this variant</td>
 </tr>
 <tr>
 <td>endoflife</td>
 <td>boolean</td>
-<td>webshop can max sell stock amount, when stock = 0 the product will go offline</td>
+<td>webshop can max sell stock amount, when stock = 0 the variant will go offline</td>
 </tr>
 <tr>
 <td>HBK</td>
@@ -930,11 +932,13 @@ When you create a new API key and secret you have to write down the API secret b
 <tr>
 <td>attribute_items</td>
 <td>array</td>
-<td></td>
+<td>Required on POST/PUT. One item for a single option (e.g. size), two items for a combined option (e.g. color + size).</td>
 </tr>
 </tbody></table>
 
 <p><strong>Products - attributes - attribute_items</strong></p>
+
+<p>An existing option value is reused when <code>attribute_id</code> or <code>attribute</code> (option reference) matches <code>options_values</code>. Otherwise a new option value is created.</p>
 
 <table><thead>
 <tr>
@@ -946,27 +950,27 @@ When you create a new API key and secret you have to write down the API secret b
 <tr>
 <td>attribute_id</td>
 <td>integer</td>
-<td>Unique identifier for the resource. <code>[read-only]</code></td>
+<td>Unique identifier of the option value. Optional on POST/PUT to select an existing option. <code>[read-only]</code> on GET.</td>
 </tr>
 <tr>
 <td>attribute</td>
 <td>string</td>
-<td>Reference of the option</td>
+<td>Reference of the option (e.g. <code>L</code>, <code>BLUE</code>). Required on POST/PUT when <code>attribute_id</code> is not sent.</td>
 </tr>
 <tr>
 <td>attribute_name</td>
 <td>string</td>
-<td>Name of the option</td>
+<td>Name of the option. Used when a new option value is created; defaults to <code>attribute</code>.</td>
 </tr>
 <tr>
 <td>attribute_group_id</td>
 <td>integer</td>
-<td>ID of the option group (eg: 1 = Size, 2 = Color)</td>
+<td>ID of the option group (eg: 1 = Size, 2 = Color). Used when a new option value is created.</td>
 </tr>
 <tr>
 <td>lastsold</td>
 <td>date</td>
-<td>date the product is last sold <code>[read-only]</code></td>
+<td>date the variant is last sold <code>[read-only]</code></td>
 </tr>
 </tbody></table>
 
@@ -1501,7 +1505,25 @@ When you create a new API key and secret you have to write down the API secret b
                 "price_incl":"3.50",
                 "categorie_id":"155",
                 "supplier":"Carrefour",
-                "managestock":"1"
+                "managestock":"1",
+                "attributes":[
+                  {
+                    "barcode":"80723029",
+                    "stock":"10",
+                    "addprice":"0",
+                    "attribute_items":[
+                      {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+                    ]
+                  },
+                  {
+                    "barcode":"80723030",
+                    "stock":"8",
+                    "addprice":"0.20",
+                    "attribute_items":[
+                      {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+                    ]
+                  }
+                ]
                 }'</span><span class="p">;</span> <span class="c1">//JSON String</span>
 
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s2">"https://api.onlinefact.be/products/"</span><span class="p">);</span>
@@ -1527,7 +1549,25 @@ When you create a new API key and secret you have to write down the API secret b
       "price_incl":"3.50",
       "categorie_id":"155",
       "supplier":"Carrefour",
-      "managestock":"1"
+      "managestock":"1",
+      "attributes":[
+        {
+          "barcode":"80723029",
+          "stock":"10",
+          "addprice":"0",
+          "attribute_items":[
+            {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+          ]
+        },
+        {
+          "barcode":"80723030",
+          "stock":"8",
+          "addprice":"0.20",
+          "attribute_items":[
+            {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+          ]
+        }
+      ]
       }'</span>
 </code></pre></div>
 <blockquote>
@@ -1569,7 +1609,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"images"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint add a product.</p>
+<p>This endpoint adds a product. Send <code>attributes</code> to create option variants (<code>product_type</code> 3) in the same request. Without <code>attributes</code> a normal product (<code>product_type</code> 1) is created.</p>
 <h3 id='https-request-3'>HTTPS Request</h3>
 <p><code>POST https://api.onlinefact.be/products/</code></p>
 <h3 id='url-parameters-2'>URL Parameters</h3>
@@ -1581,13 +1621,30 @@ When you create a new API key and secret you have to write down the API secret b
 </thead><tbody>
 <tr>
 <td>reference</td>
-<td>The unique SKU of the product</td>
+<td>The unique SKU of the product. For option products this is the base SKU; each variant becomes <code>reference</code> + delimiter + option reference.</td>
 </tr>
 </tbody></table>
 <h2 id='update-a-product'>Update a Product</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
                  "description":"Mentos White 25pack",
-                 "supplier":"Carrefour"
+                 "supplier":"Carrefour",
+                 "attributes":[
+                   {
+                     "barcode":"80723029",
+                     "stock":"10",
+                     "attribute_items":[
+                       {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+                     ]
+                   },
+                   {
+                     "barcode":"80723030",
+                     "stock":"8",
+                     "addprice":"0.20",
+                     "attribute_items":[
+                       {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+                     ]
+                   }
+                 ]
                 }'</span><span class="p">;</span> <span class="c1">//JSON String</span>
 
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s2">"https://api.onlinefact.be/products/8/"</span><span class="p">);</span>
@@ -1608,7 +1665,24 @@ When you create a new API key and secret you have to write down the API secret b
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
         "description":"Mentos White 25pack",
-        "supplier":"Carrefour"
+        "supplier":"Carrefour",
+        "attributes":[
+          {
+            "barcode":"80723029",
+            "stock":"10",
+            "attribute_items":[
+              {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+            ]
+          },
+          {
+            "barcode":"80723030",
+            "stock":"8",
+            "addprice":"0.20",
+            "attribute_items":[
+              {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+            ]
+          }
+        ]
       }'</span>
 </code></pre></div>
 <blockquote>
@@ -1655,7 +1729,7 @@ When you create a new API key and secret you have to write down the API secret b
   </span><span class="nl">"images"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint updates a specific product.</p>
+<p>This endpoint updates a specific product. Send <code>attributes</code> to add or replace option variants. A normal product is converted to <code>product_type</code> 3. The array is the full option set: variants that are omitted are deleted when they are not used on documents.</p>
 <h3 id='https-request-4'>HTTPS Request</h3>
 <p><code>PUT https://api.onlinefact.be/products/&lt;ID&gt;</code></p>
 <h3 id='url-parameters-3'>URL Parameters</h3>
