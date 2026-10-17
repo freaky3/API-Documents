@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-17 **new** — `POST /banktransactions/{id}/link` koppelt een banktransactie aan een document en maakt daarbij een bankoverschrijving (paytype 3) aan.
 - 2026-10-15 **update** — De kassa-API (`kassa.php`) staat niet meer in de API-documentatie.
 - 2026-10-15 **new** — Kassa-docs: POS-template `theme` documenteert `color_button`, `color_numpad` en `color_numpad_text`.
 - 2026-10-15 **update** — Kassa-docs: `color_accent` in het POS-template is alleen de kleur van de betaalknop.
