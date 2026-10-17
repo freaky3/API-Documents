@@ -474,6 +474,17 @@
               </ul>
           </li>
           <li>
+            <a href="#bank-transactions" class="toc-h1 toc-link" data-title="Bank Transactions">Bank Transactions</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#get-all-bank-transactions" class="toc-h2 toc-link" data-title="Get All Bank Transactions">Get All Bank Transactions</a>
+                  </li>
+                  <li>
+                    <a href="#get-a-specific-bank-transaction" class="toc-h2 toc-link" data-title="Get a Specific Bank Transaction">Get a Specific Bank Transaction</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#reports" class="toc-h1 toc-link" data-title="Reports">Reports</a>
               <ul class="toc-list-h2">
                   <li>
@@ -3636,7 +3647,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <tr>
 <td>document_type</td>
 <td>integer</td>
-<td>1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket.</td>
+<td>1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice.</td>
 </tr>
 <tr>
 <td>number</td>
@@ -4359,17 +4370,17 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <tr>
 <td>min_date</td>
 <td>date</td>
-<td>Return documents from this start date (YYYY-MM-DD)</td>
+<td>Return documents from this start date (YYYY-MM-DD). When both <code>min_date</code> and <code>max_date</code> are set, the range is at most 14 days.</td>
 </tr>
 <tr>
 <td>max_date</td>
 <td>date</td>
-<td>Return documents until this end date (YYYY-MM-DD)</td>
+<td>Return documents until this end date (YYYY-MM-DD). When both <code>min_date</code> and <code>max_date</code> are set, the range is at most 14 days.</td>
 </tr>
 <tr>
 <td>document_type</td>
 <td>integer</td>
-<td>1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket</td>
+<td>1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice</td>
 </tr>
 <tr>
 <td>from_document_id</td>
@@ -4402,6 +4413,10 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <td>page number of result.</td>
 </tr>
 </tbody></table>
+
+<aside class="notice">
+<code>document_type</code> 11 is a purchase invoice. When both <code>min_date</code> and <code>max_date</code> are set, the date range is at most 14 days.
+</aside>
 <h2 id='get-a-specific-document'>Get a Specific Document</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/documents/468/'</span><span class="p">);</span>
 <span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
@@ -4754,7 +4769,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 </tr>
 <tr>
 <td>document_type</td>
-<td>1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 99 = Kassa parking</td>
+<td>1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice, 99 = Kassa parking</td>
 </tr>
 <tr>
 <td>reference</td>
@@ -5499,6 +5514,416 @@ Response returns linked documents in `documents`.
 <tr>
 <td>ID</td>
 <td>The ID of the payment to delete.</td>
+</tr>
+</tbody></table>
+<h1 id='bank-transactions'>Bank Transactions</h1>
+<p><code>GET /banktransactions/</code> returns a JSON array of bank accounts. Each account contains the transactions that match the filters. Accounts with no matching transactions stay in the list with <code>transactions</code> set to <code>[]</code>.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Unique identifier for the bank account. <code>[read-only]</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Account name as set in the backoffice. <code>null</code> when empty.</td>
+</tr>
+<tr>
+<td>iban</td>
+<td>string</td>
+<td>IBAN of the bank account.</td>
+</tr>
+<tr>
+<td>bic</td>
+<td>string</td>
+<td>BIC of the bank account.</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>string</td>
+<td>Currency of the bank account, for example <code>EUR</code>.</td>
+</tr>
+<tr>
+<td>institution_id</td>
+<td>string</td>
+<td>Identifier of the bank institution.</td>
+</tr>
+<tr>
+<td>active</td>
+<td>boolean</td>
+<td><code>true</code> when the bank account is active. Inactive accounts (<code>active</code> = 0) are omitted unless <code>include_inactive=1</code>.</td>
+</tr>
+<tr>
+<td>balance</td>
+<td>decimal</td>
+<td>Current balance of the bank account.</td>
+</tr>
+<tr>
+<td>last_sync</td>
+<td>datetime</td>
+<td>Timestamp of the last synchronization (<code>YYYY-MM-DD HH:MM:SS</code>).</td>
+</tr>
+<tr>
+<td>connection_valid</td>
+<td>boolean</td>
+<td><code>true</code> when the bank connection is valid.</td>
+</tr>
+<tr>
+<td>total_transactions</td>
+<td>integer</td>
+<td>Number of matching transactions for this account across all pages.</td>
+</tr>
+<tr>
+<td>transactions</td>
+<td>array</td>
+<td>Transactions on this page. See <strong>Bank transactions - transaction</strong>.</td>
+</tr>
+</tbody></table>
+
+<p><strong>Bank transactions - transaction</strong></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Unique identifier for the bank transaction. <code>[read-only]</code></td>
+</tr>
+<tr>
+<td>date</td>
+<td>date</td>
+<td>Transaction date (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>decimal</td>
+<td>Signed transaction amount. Outgoing amounts are negative.</td>
+</tr>
+<tr>
+<td>direction</td>
+<td>string</td>
+<td><code>in</code> for money received, <code>out</code> for money paid.</td>
+</tr>
+<tr>
+<td>counterparty_name</td>
+<td>string</td>
+<td>Name of the counterparty.</td>
+</tr>
+<tr>
+<td>counterparty_iban</td>
+<td>string</td>
+<td>IBAN of the counterparty.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>string</td>
+<td>Message or remittance information.</td>
+</tr>
+<tr>
+<td>reference</td>
+<td>string</td>
+<td>Structured or free reference.</td>
+</tr>
+<tr>
+<td>open_amount</td>
+<td>decimal</td>
+<td>Unsigned open amount: the absolute value of <code>amount</code> minus the absolute amounts of the linked payments.</td>
+</tr>
+<tr>
+<td>payments</td>
+<td>array</td>
+<td>Payments linked to this transaction. See <strong>Bank transactions - payments</strong>.</td>
+</tr>
+</tbody></table>
+
+<p><strong>Bank transactions - payments</strong></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>payment_id</td>
+<td>integer</td>
+<td>Id of the linked payment.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>decimal</td>
+<td>Amount of the payment linked to this transaction.</td>
+</tr>
+<tr>
+<td>date</td>
+<td>date</td>
+<td>Payment date (<code>YYYY-MM-DD</code>).</td>
+</tr>
+<tr>
+<td>documents</td>
+<td>array</td>
+<td>Documents this payment is applied to. See <strong>Bank transactions - payments - documents</strong>.</td>
+</tr>
+</tbody></table>
+
+<p><strong>Bank transactions - payments - documents</strong></p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>document_id</td>
+<td>integer</td>
+<td>Document id.</td>
+</tr>
+<tr>
+<td>document_type</td>
+<td>integer</td>
+<td>Document type id. <code>11</code> is a purchase invoice.</td>
+</tr>
+<tr>
+<td>document_number</td>
+<td>string</td>
+<td>Document number.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>decimal</td>
+<td>Amount recorded for this document on the payment.</td>
+</tr>
+</tbody></table>
+
+<aside class="notice">
+Only <code>GET</code> is supported. Authenticate with HTTP Basic authentication: the API key is the username and the API secret is the password. Results are limited to the account of the API key. Filters, <code>limit</code>, <code>page</code>, <code>order_by</code> and <code>order_dir</code> apply to transactions. There is a next page when <code>page * limit</code> is lower than the sum of <code>total_transactions</code>.
+</aside>
+<h2 id='get-all-bank-transactions'>Get All Bank Transactions</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/banktransactions/?limit=100&amp;page=1&amp;min_date=2026-10-01&amp;max_date=2026-10-17&amp;direction=out&amp;onlyopen=1&amp;order_by=date&amp;order_dir=desc'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/banktransactions/?limit=100&amp;page=1&amp;min_date=2026-10-01&amp;max_date=2026-10-17&amp;direction=out&amp;onlyopen=1&amp;order_by=date&amp;order_dir=desc"</span> <span class="se">\</span>
+  <span class="nt">-X</span> GET <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+   </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"KBC"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"iban"</span><span class="p">:</span><span class="s2">"BE11000000000001"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"bic"</span><span class="p">:</span><span class="s2">"KREDBEBB"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"currency"</span><span class="p">:</span><span class="s2">"EUR"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"institution_id"</span><span class="p">:</span><span class="s2">"KBC_KREDBEBB"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"balance"</span><span class="p">:</span><span class="s2">"1520.40"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"last_sync"</span><span class="p">:</span><span class="s2">"2026-10-17 08:12:03"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"connection_valid"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"total_transactions"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
+         </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-10-05"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"-80.50"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"direction"</span><span class="p">:</span><span class="s2">"out"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"counterparty_name"</span><span class="p">:</span><span class="s2">"Supplier NV"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"counterparty_iban"</span><span class="p">:</span><span class="s2">"BE71096123456769"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"message"</span><span class="p">:</span><span class="s2">"Factuur 2026/15"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"reference"</span><span class="p">:</span><span class="s2">"narrative raw"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"open_amount"</span><span class="p">:</span><span class="s2">"50.25"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"payments"</span><span class="p">:[</span><span class="w">
+               </span><span class="p">{</span><span class="w">
+                  </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">82</span><span class="p">,</span><span class="w">
+                  </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"-30.25"</span><span class="p">,</span><span class="w">
+                  </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-10-05"</span><span class="p">,</span><span class="w">
+                  </span><span class="nl">"documents"</span><span class="p">:[</span><span class="w">
+                     </span><span class="p">{</span><span class="w">
+                        </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">501</span><span class="p">,</span><span class="w">
+                        </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="w">
+                        </span><span class="nl">"document_number"</span><span class="p">:</span><span class="s2">"AF2026/15"</span><span class="p">,</span><span class="w">
+                        </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"80.50"</span><span class="w">
+                     </span><span class="p">}</span><span class="w">
+                  </span><span class="p">]</span><span class="w">
+               </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+         </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+   </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div>
+<p>This endpoint retrieves bank accounts for the API key, with the transactions that match the filters nested in <code>transactions</code>.</p>
+
+<p>Accounts without matching transactions stay in the list with <code>transactions</code> set to <code>[]</code>. <code>open_amount</code> for the transaction above is <code>abs(-80.50) - abs(-30.25) = 50.25</code>.</p>
+<h3 id='https-request'>HTTPS Request</h3>
+<p><code>GET https://api.onlinefact.be/banktransactions/</code></p>
+<h3 id='query-parameters'>Query Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>min_date</td>
+<td></td>
+<td>minimum transaction date (<code>YYYY-MM-DD</code>). Alias: <code>from</code>.</td>
+</tr>
+<tr>
+<td>max_date</td>
+<td></td>
+<td>maximum transaction date (<code>YYYY-MM-DD</code>). Alias: <code>to</code>.</td>
+</tr>
+<tr>
+<td>direction</td>
+<td></td>
+<td><code>in</code> or <code>out</code>. Alias: <code>outgoing=1</code> selects outgoing transactions (<code>direction=out</code>).</td>
+</tr>
+<tr>
+<td>onlyopen</td>
+<td></td>
+<td><code>1</code> returns only transactions that still have an open amount.</td>
+</tr>
+<tr>
+<td>bank_account_id</td>
+<td></td>
+<td>return only this bank account. Alias: <code>iban</code> (the numeric bank account id, not the IBAN string).</td>
+</tr>
+<tr>
+<td>include_inactive</td>
+<td></td>
+<td>inactive accounts (<code>active</code> = 0) are omitted unless this is <code>1</code>.</td>
+</tr>
+<tr>
+<td>limit</td>
+<td>100</td>
+<td>limit transaction results (max 1000).</td>
+</tr>
+<tr>
+<td>page</td>
+<td>1</td>
+<td>page number of transaction results.</td>
+</tr>
+<tr>
+<td>order_by</td>
+<td>id</td>
+<td>sort transactions by <code>id</code>, <code>date</code> or <code>amount</code>.</td>
+</tr>
+<tr>
+<td>order_dir</td>
+<td>ASC</td>
+<td>sort direction <code>ASC</code> or <code>DESC</code>.</td>
+</tr>
+</tbody></table>
+<h2 id='get-a-specific-bank-transaction'>Get a Specific Bank Transaction</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+<span class="nv">$bank_transaction_id</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/banktransactions/'</span><span class="mf">.</span><span class="nv">$bank_transaction_id</span><span class="mf">.</span><span class="s1">'/'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"GET"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/banktransactions/11/"</span> <span class="se">\</span>
+  <span class="nt">-X</span> GET <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"KBC"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"iban"</span><span class="p">:</span><span class="s2">"BE11000000000001"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"bic"</span><span class="p">:</span><span class="s2">"KREDBEBB"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"currency"</span><span class="p">:</span><span class="s2">"EUR"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"institution_id"</span><span class="p">:</span><span class="s2">"KBC_KREDBEBB"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"balance"</span><span class="p">:</span><span class="s2">"1520.40"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"last_sync"</span><span class="p">:</span><span class="s2">"2026-10-17 08:12:03"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"connection_valid"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"total_transactions"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-10-05"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"-80.50"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"direction"</span><span class="p">:</span><span class="s2">"out"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"counterparty_name"</span><span class="p">:</span><span class="s2">"Supplier NV"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"counterparty_iban"</span><span class="p">:</span><span class="s2">"BE71096123456769"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"message"</span><span class="p">:</span><span class="s2">"Factuur 2026/15"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"reference"</span><span class="p">:</span><span class="s2">"narrative raw"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"open_amount"</span><span class="p">:</span><span class="s2">"50.25"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"payments"</span><span class="p">:[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+               </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">82</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"-30.25"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-10-05"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"documents"</span><span class="p">:[</span><span class="w">
+                  </span><span class="p">{</span><span class="w">
+                     </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">501</span><span class="p">,</span><span class="w">
+                     </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="w">
+                     </span><span class="nl">"document_number"</span><span class="p">:</span><span class="s2">"AF2026/15"</span><span class="p">,</span><span class="w">
+                     </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"80.50"</span><span class="w">
+                  </span><span class="p">}</span><span class="w">
+               </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+         </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>This endpoint retrieves one bank account object. <code>transactions</code> contains only the requested transaction.</p>
+<h3 id='https-request-2'>HTTPS Request</h3>
+<p><code>GET https://api.onlinefact.be/banktransactions/&lt;ID&gt;</code></p>
+<h3 id='url-parameters'>URL Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ID</td>
+<td>The ID of the bank transaction to retrieve.</td>
 </tr>
 </tbody></table>
 <h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
