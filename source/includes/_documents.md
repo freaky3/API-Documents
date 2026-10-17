@@ -4,7 +4,7 @@ Parameter | Type | Description
 --------- | ------- | -----------
 document_id | integer | Unique identifier for the resource. `[read-only]`
 name | string | Name of documenttype.
-document_type | integer | 1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket.
+document_type | integer | 1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice.
 number | string | document number `[read-only]`
 document_date | data | date of document
 expiration_date | data | date of document
@@ -391,9 +391,9 @@ This endpoint retrieves all documents.
 
 Parameter | Default | Description
 --------- | ------- | -----------
-min_date | date | Return documents from this start date (YYYY-MM-DD)
-max_date | date | Return documents until this end date (YYYY-MM-DD)
-document_type | integer |1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket
+min_date | date | Return documents from this start date (YYYY-MM-DD). When both `min_date` and `max_date` are set, the range is at most 14 days.
+max_date | date | Return documents until this end date (YYYY-MM-DD). When both `min_date` and `max_date` are set, the range is at most 14 days.
+document_type | integer |1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice
 from_document_id | integer | Return documents from this document_id
 from_datemodified | integer | Return documents from this timestamp `unix timestamp format`
 filter | string | Filter result with string data *(customer reference/name)*
@@ -401,6 +401,9 @@ closed | integer | 0 = get only open documents
 limit | 10 | limit results (max 100).
 page | 1 | page number of result.
 
+<aside class="notice">
+<code>document_type</code> 11 is a purchase invoice. When both <code>min_date</code> and <code>max_date</code> are set, the date range is at most 14 days.
+</aside>
 
 ## Get a Specific Document
 
@@ -759,7 +762,7 @@ Parameter | Description
 --------- | ------- 
 document_date | Document date
 document_time | Document time
-document_type | 1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 99 = Kassa parking
+document_type | 1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice, 99 = Kassa parking
 reference | reference of document
 sendwithpeppol| 1 = submit the document with peppol to customer (only document_type 3 and 4)
 customer_id | ID of customer for this document

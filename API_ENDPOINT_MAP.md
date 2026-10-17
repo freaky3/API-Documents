@@ -49,6 +49,12 @@ Doel: centrale referentie om API-implementatie en Slate-documentatie synchroon t
   - `GET /payments/<ID>`
   - `POST /payments/`
   - `DELETE /payments/<ID>`
+- `bankaccounts`
+  - `GET /bankaccounts/`
+  - `GET /bankaccounts/<ID>`
+- `banktransactions`
+  - `GET /banktransactions/`
+  - `GET /banktransactions/<ID>`
 - `reports`
   - `GET /reports/documents/`
   - `GET /reports/saletotals/`
@@ -91,6 +97,15 @@ Deze afspraken zijn expliciet vastgelegd en moeten consistent blijven tussen cod
   - filters: `document_id`, `type`, `date`, `min_date`, `max_date`
   - sorting: `order_by` (`payment_id|date|type|amount`) en `order_dir` (`ASC|DESC`)
 - Z-report koppeling (`zreport_id`) is verwijderd uit het payments endpoint contract.
+
+## Bank accounts en bank transactions (read-only)
+
+- Alleen `GET`. Authenticatie is HTTP Basic met API key en secret. Resultaten zijn beperkt tot het account van de API key.
+- `GET /bankaccounts/` en `GET /bankaccounts/<ID>`: velden `id`, `name` (momenteel altijd `null`), `iban`, `bic`, `balance`, `last_sync`, `connection_valid`, `expires_at` (momenteel altijd `null`), `last_http_code`.
+- Paginatie bankrekeningen: `limit` (default 100, max 1000), `page`, `order_by` (`id`, `iban`, `balance`, `last_sync`), `order_dir`.
+- `GET /banktransactions/` en `GET /banktransactions/<ID>`: filters `min_date`/`max_date` (aliassen `from`/`to`), `direction` (`in` of `out`, alias `outgoing=1`), `onlyopen=1` (alias `open=1`), `bank_account_id`, `limit` (default 100, max 1000), `page`, `order_by` (`id`, `date`, `amount`), `order_dir`.
+- `open_amount` is unsigned: absolute waarde van `amount` min de gekoppelde betalingen.
+- `GET /documents/`: `document_type` 11 is een aankoopfactuur. Als zowel `min_date` als `max_date` gezet zijn, is het bereik maximaal 14 dagen.
 
 ## Release-gate voor API changes
 
