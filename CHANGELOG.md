@@ -1,5 +1,12 @@
 # Changelog
 
+- 2026-10-15 **update** — De kassa-API (`kassa.php`) staat niet meer in de API-documentatie.
+- 2026-10-15 **new** — Kassa-docs: POS-template `theme` documenteert `color_button`, `color_numpad` en `color_numpad_text`.
+- 2026-10-15 **update** — Kassa-docs: `color_accent` in het POS-template is alleen de kleur van de betaalknop.
+- 2026-10-15 **update** — Kassa-docs: het veld `selfscan` is weg uit `data=params`. Zonder POS-template geldt alleen nog `onlypark` als terugval.
+- 2026-10-15 **update** — Kassa-docs: het POS-template `ui`-object documenteert een vlag per operatorknop; `show_operator_pay_buttons` is afgeleid voor oudere kassa's.
+- 2026-10-14 **new** — Kassa-docs: `kassa.php?data=params` geeft nu `template_id` en een `template`-object (POS-template: ui/behavior/theme, knoppengroep); `selfscan`/`onlypark` zijn afgeleid van de template. Nieuwe secties voor `data=button_categories` en `data=buttons` met de resolutie van de knoppengroep.
+
 ## Version 2.13.0
 
 *April 22, 2022*

@@ -1,0 +1,13 @@
+---
+description: De kassa-API (kassa.php) mag niet in de Slate API-documentatie
+alwaysApply: true
+---
+
+# Kassa-API niet documenteren
+
+`kassa.php` is de interne kassa/POS-API. Die staat niet in de publieke API-documentatie (Slate).
+
+- Geen include `kassa` in `source/index.html.md`.
+- Geen `source/includes/_kassa.md` en geen andere sectie over `kassa.php`.
+- Wijzigingen aan `kassa.php` (params, knoppen, producten, klanten, betalingen, tickets, POS-templates) krijgen geen Slate-update.
+- De verplichte API-naar-Slate-sync geldt alleen voor de publieke REST-API (`api2`, `/products`, `/documents`, enzovoort).

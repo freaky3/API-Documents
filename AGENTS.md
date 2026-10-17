@@ -18,6 +18,8 @@ Deze repository bevat de bron van de API-documentatie voor `https://api.onlinefa
 
 Bij elke wijziging in `C:\Sources\api_onlinefact` die impact heeft op API-contracten, moet Slate onmiddellijk mee aangepast worden.
 
+Uitzondering: de kassa-API (`kassa.php`) hoort niet in deze documentatie. Geen include `kassa`, geen `_kassa.md`, en geen nieuwe sectie over `kassa.php`. Wijzigingen aan `kassa.php` krijgen geen docs-update.
+
 Onder API-contracten vallen:
 - endpoint routes en HTTP-methodes
 - query/body parameters

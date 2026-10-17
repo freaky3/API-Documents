@@ -1,0 +1,34 @@
+---
+description: Log belangrijke wijzigingen in CHANGELOG.md
+alwaysApply: true
+---
+
+# Changelog bijhouden
+
+Na een belangrijke wijziging, werk `CHANGELOG.md` in dezelfde wijziging bij. Nieuwste datum bovenaan. Gebruik alleen deze categorieën:
+
+- **new** — nieuwe functionaliteit
+- **update** — bestaand gedrag, labels, sortering, mapping of configuratie wijzigt
+- **bugfix** — een fout wordt hersteld
+
+## Wel loggen
+
+Gedrag dat een gebruiker, beheerder of gekoppeld systeem merkt.
+
+## Niet loggen
+
+Opmaak, comments, rename zonder gedragswijziging, dependency-bumps zonder effect, en puur lokale debug.
+
+## Vorm
+
+Eén regel per wijziging, nieuwste bovenaan, direct onder de categorie-uitleg. Bestaat `CHANGELOG.md` nog niet, maak het bestand met die uitleg en de nieuwe regel.
+
+```markdown
+- 2026-10-14 **bugfix** — Korte zin in het Nederlands: wat de gebruiker merkt.
+```
+
+Zelfde dag en categorie mogen op aparte regels blijven. Geen datumkoppen of subkoppen.
+
+## Nooit schrappen
+
+De changelog is oneindig. Verwijder geen bestaande regel, ook niet bij een herschrijving of een nieuwe versie. Een wijziging komt bovenaan; alles wat er al stond blijft staan.

@@ -40,7 +40,7 @@ lastsold | date | date the product is last sold `[read-only]`
 categories | array | 
 barcodes | array | 
 images | array | 
-attributes | array |  
+attributes | array | Option variants (`product_type` 3). On POST this creates option products. On PUT this replaces the full option set of the product.
 discount | array | 
 extra | array |
 component | array |
@@ -85,30 +85,34 @@ barcode | string | Barcode of the multi-pack
 
 **Products - attributes**
 
+On POST, include `attributes` to create a product with options (`product_type` 3). Each item becomes a variant with SKU `reference` + account option delimiter + option reference(s). On PUT, `attributes` replaces the complete option set: missing variants are removed (when not used on documents), new ones are created, existing ones are updated. A normal product (`product_type` 1) is converted to an option product when `attributes` is sent.
+
 Parameter | Type | Description
 --------- | ------- | -----------
-product_id | integer | Unique identifier for the resource. `[read-only]`
-reference | string | Unique SKU
+product_id | integer | Unique identifier of the variant. `[read-only]` on GET. Optional on PUT to match an existing variant.
+reference | string | Unique SKU of the variant `[read-only]`
 reference2 | string | 
-barcode | string | the barcode of the product, can be EAN13 of any other type
-stock | decimal | amount of inventory
-addprice | decimal | price difference 
-webshop | boolean | may this product be visible on webshop
-dropship | boolean | webshop has always stock of this product
-endoflife | boolean | webshop can max sell stock amount, when stock = 0 the product will go offline
+barcode | string | barcode of this variant
+stock | decimal | inventory of this variant
+addprice | decimal | price difference vs the parent `price_excl`
+webshop | boolean | may this variant be visible on webshop
+dropship | boolean | webshop has always stock of this variant
+endoflife | boolean | webshop can max sell stock amount, when stock = 0 the variant will go offline
 HBK | decimal | amount of open client orders `[read-only]`
 HBL | decimal | amount of open supplier orders `[read-only]`
-attribute_items | array |
+attribute_items | array | Required on POST/PUT. One item for a single option (e.g. size), two items for a combined option (e.g. color + size).
 
 **Products - attributes - attribute_items**
 
+An existing option value is reused when `attribute_id` or `attribute` (option reference) matches `options_values`. Otherwise a new option value is created.
+
 Parameter | Type | Description
 --------- | ------- | -----------
-attribute_id | integer | Unique identifier for the resource. `[read-only]`
-attribute | string | Reference of the option
-attribute_name | string | Name of the option
-attribute_group_id | integer | ID of the option group (eg: 1 = Size, 2 = Color)
-lastsold | date | date the product is last sold `[read-only]`
+attribute_id | integer | Unique identifier of the option value. Optional on POST/PUT to select an existing option. `[read-only]` on GET.
+attribute | string | Reference of the option (e.g. `L`, `BLUE`). Required on POST/PUT when `attribute_id` is not sent.
+attribute_name | string | Name of the option. Used when a new option value is created; defaults to `attribute`.
+attribute_group_id | integer | ID of the option group (eg: 1 = Size, 2 = Color). Used when a new option value is created.
+lastsold | date | date the variant is last sold `[read-only]`
 
 
 **Products - discount**
@@ -541,7 +545,25 @@ $data_string = '{"reference":"MENTOS",
                 "price_incl":"3.50",
                 "categorie_id":"155",
                 "supplier":"Carrefour",
-                "managestock":"1"
+                "managestock":"1",
+                "attributes":[
+                  {
+                    "barcode":"80723029",
+                    "stock":"10",
+                    "addprice":"0",
+                    "attribute_items":[
+                      {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+                    ]
+                  },
+                  {
+                    "barcode":"80723030",
+                    "stock":"8",
+                    "addprice":"0.20",
+                    "attribute_items":[
+                      {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+                    ]
+                  }
+                ]
                 }'; //JSON String
 
 $ch = curl_init("https://api.onlinefact.be/products/");
@@ -570,7 +592,25 @@ curl "https://api.onlinefact.be/products/" \
       "price_incl":"3.50",
       "categorie_id":"155",
       "supplier":"Carrefour",
-      "managestock":"1"
+      "managestock":"1",
+      "attributes":[
+        {
+          "barcode":"80723029",
+          "stock":"10",
+          "addprice":"0",
+          "attribute_items":[
+            {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+          ]
+        },
+        {
+          "barcode":"80723030",
+          "stock":"8",
+          "addprice":"0.20",
+          "attribute_items":[
+            {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+          ]
+        }
+      ]
       }'
 ```
 
@@ -614,7 +654,7 @@ curl "https://api.onlinefact.be/products/" \
 }
 ```
 
-This endpoint add a product.
+This endpoint adds a product. Send `attributes` to create option variants (`product_type` 3) in the same request. Without `attributes` a normal product (`product_type` 1) is created.
 
 ### HTTPS Request
 
@@ -624,7 +664,7 @@ This endpoint add a product.
 
 Parameter | Description
 --------- | -----------
-reference | The unique SKU of the product
+reference | The unique SKU of the product. For option products this is the base SKU; each variant becomes `reference` + delimiter + option reference.
 
 
 ## Update a Product
@@ -633,7 +673,24 @@ reference | The unique SKU of the product
 
 $data_string = '{
                  "description":"Mentos White 25pack",
-                 "supplier":"Carrefour"
+                 "supplier":"Carrefour",
+                 "attributes":[
+                   {
+                     "barcode":"80723029",
+                     "stock":"10",
+                     "attribute_items":[
+                       {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+                     ]
+                   },
+                   {
+                     "barcode":"80723030",
+                     "stock":"8",
+                     "addprice":"0.20",
+                     "attribute_items":[
+                       {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+                     ]
+                   }
+                 ]
                 }'; //JSON String
 
 $ch = curl_init("https://api.onlinefact.be/products/8/");
@@ -657,7 +714,24 @@ curl "https://api.onlinefact.be/products/8/" \
   -H "Content-Type: application/json" \
   -d '{
         "description":"Mentos White 25pack",
-        "supplier":"Carrefour"
+        "supplier":"Carrefour",
+        "attributes":[
+          {
+            "barcode":"80723029",
+            "stock":"10",
+            "attribute_items":[
+              {"attribute":"S","attribute_name":"Small","attribute_group_id":1}
+            ]
+          },
+          {
+            "barcode":"80723030",
+            "stock":"8",
+            "addprice":"0.20",
+            "attribute_items":[
+              {"attribute":"M","attribute_name":"Medium","attribute_group_id":1}
+            ]
+          }
+        ]
       }'
 ```
 
@@ -706,7 +780,7 @@ curl "https://api.onlinefact.be/products/8/" \
 }
 ```
 
-This endpoint updates a specific product.
+This endpoint updates a specific product. Send `attributes` to add or replace option variants. A normal product is converted to `product_type` 3. The array is the full option set: variants that are omitted are deleted when they are not used on documents.
 
 ### HTTPS Request
 
