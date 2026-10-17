@@ -49,9 +49,6 @@ Doel: centrale referentie om API-implementatie en Slate-documentatie synchroon t
   - `GET /payments/<ID>`
   - `POST /payments/`
   - `DELETE /payments/<ID>`
-- `bankaccounts`
-  - `GET /bankaccounts/`
-  - `GET /bankaccounts/<ID>`
 - `banktransactions`
   - `GET /banktransactions/`
   - `GET /banktransactions/<ID>`
@@ -98,13 +95,18 @@ Deze afspraken zijn expliciet vastgelegd en moeten consistent blijven tussen cod
   - sorting: `order_by` (`payment_id|date|type|amount`) en `order_dir` (`ASC|DESC`)
 - Z-report koppeling (`zreport_id`) is verwijderd uit het payments endpoint contract.
 
-## Bank accounts en bank transactions (read-only)
+## Bank transactions (read-only)
 
-- Alleen `GET`. Authenticatie is HTTP Basic met API key en secret. Resultaten zijn beperkt tot het account van de API key.
-- `GET /bankaccounts/` en `GET /bankaccounts/<ID>`: velden `id`, `name` (momenteel altijd `null`), `iban`, `bic`, `balance`, `last_sync`, `connection_valid`, `expires_at` (momenteel altijd `null`), `last_http_code`.
-- Paginatie bankrekeningen: `limit` (default 100, max 1000), `page`, `order_by` (`id`, `iban`, `balance`, `last_sync`), `order_dir`.
-- `GET /banktransactions/` en `GET /banktransactions/<ID>`: filters `min_date`/`max_date` (aliassen `from`/`to`), `direction` (`in` of `out`, alias `outgoing=1`), `onlyopen=1` (alias `open=1`), `bank_account_id`, `limit` (default 100, max 1000), `page`, `order_by` (`id`, `date`, `amount`), `order_dir`.
-- `open_amount` is unsigned: absolute waarde van `amount` min de gekoppelde betalingen.
+- Geen `/bankaccounts` endpoint.
+- Alleen `GET /banktransactions/` en `GET /banktransactions/<ID>`. HTTP Basic met API key en secret. Resultaten zijn beperkt tot het account van de API key.
+- `GET /banktransactions/` geeft een JSON-array van bankrekeningen. Elke rekening bevat `transactions[]`. Rekeningen zonder match blijven in de lijst met `transactions: []`.
+- Velden rekening: `id`, `name` (naam uit de backoffice, `null` indien leeg), `iban`, `bic`, `currency`, `institution_id`, `active`, `balance`, `last_sync`, `connection_valid`, `total_transactions` (aantal matches over alle pagina's), `transactions`.
+- Velden transactie: `id`, `date`, `amount`, `direction`, `counterparty_name`, `counterparty_iban`, `message`, `reference`, `open_amount`, `payments[]` (`payment_id`, `amount`, `date`, `documents[]` met `document_id`, `document_type`, `document_number`, `amount`).
+- Filters gelden voor transacties: `min_date`/`max_date` (alias `from`/`to`), `direction` (`in`|`out`, alias `outgoing=1`), `onlyopen=1`, `bank_account_id` (alias `iban`, het numerieke id), `include_inactive=1`, `limit` (default 100, max 1000), `page`, `order_by` (`id`, `date`, `amount`), `order_dir`.
+- Inactieve rekeningen (`active` = 0) worden weggelaten tenzij `include_inactive=1`.
+- Er is een volgende pagina wanneer `page * limit` kleiner is dan de som van `total_transactions`.
+- `GET /banktransactions/<ID>` geeft één rekeningobject met alleen die transactie.
+- `open_amount` is unsigned: absolute waarde van `amount` min de absolute bedragen van de gekoppelde betalingen.
 - `GET /documents/`: `document_type` 11 is een aankoopfactuur. Als zowel `min_date` als `max_date` gezet zijn, is het bereik maximaal 14 dagen.
 
 ## Release-gate voor API changes
