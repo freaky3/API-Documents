@@ -17,6 +17,7 @@ includes:
   - vouchers
   - documents
   - payments
+  - banktransactions
   - reports
   - reports-saletotals
   - reports-salesperproduct
