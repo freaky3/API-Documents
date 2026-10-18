@@ -482,6 +482,9 @@
                   <li>
                     <a href="#get-a-specific-bank-transaction" class="toc-h2 toc-link" data-title="Get a Specific Bank Transaction">Get a Specific Bank Transaction</a>
                   </li>
+                  <li>
+                    <a href="#link-a-bank-transaction-to-a-document" class="toc-h2 toc-link" data-title="Link a Bank Transaction to a Document">Link a Bank Transaction to a Document</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -5712,7 +5715,7 @@ Response returns linked documents in `documents`.
 </tbody></table>
 
 <aside class="notice">
-Only <code>GET</code> is supported. Authenticate with HTTP Basic authentication: the API key is the username and the API secret is the password. Results are limited to the account of the API key. Filters, <code>limit</code>, <code>page</code>, <code>order_by</code> and <code>order_dir</code> apply to transactions. There is a next page when <code>page * limit</code> is lower than the sum of <code>total_transactions</code>.
+Authenticate with HTTP Basic authentication: the API key is the username and the API secret is the password. Results are limited to the account of the API key. <code>GET</code> lists and retrieves transactions. Filters, <code>limit</code>, <code>page</code>, <code>order_by</code> and <code>order_dir</code> apply to transactions. There is a next page when <code>page * limit</code> is lower than the sum of <code>total_transactions</code>. <code>POST /banktransactions/&lt;ID&gt;/link</code> links one transaction to a document.
 </aside>
 <h2 id='get-all-bank-transactions'>Get All Bank Transactions</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
@@ -5924,6 +5927,183 @@ Only <code>GET</code> is supported. Authenticate with HTTP Basic authentication:
 <tr>
 <td>ID</td>
 <td>The ID of the bank transaction to retrieve.</td>
+</tr>
+</tbody></table>
+<h2 id='link-a-bank-transaction-to-a-document'>Link a Bank Transaction to a Document</h2><div class="highlight"><pre class="highlight php tab-php"><code>
+<span class="nv">$api_key</span> <span class="o">=</span> <span class="s2">"api_key_here"</span><span class="p">;</span>
+<span class="nv">$api_secret</span> <span class="o">=</span> <span class="s2">"api_secret_here"</span><span class="p">;</span>
+<span class="nv">$bank_transaction_id</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+
+<span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
+   "document_id":501,
+   "amount":30.25
+}'</span><span class="p">;</span> <span class="c1">// JSON String</span>
+
+<span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">(</span><span class="s1">'https://api.onlinefact.be/banktransactions/'</span><span class="mf">.</span><span class="nv">$bank_transaction_id</span><span class="mf">.</span><span class="s1">'/link'</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_CUSTOMREQUEST</span><span class="p">,</span> <span class="s2">"POST"</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_POSTFIELDS</span><span class="p">,</span> <span class="nv">$data_string</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_USERPWD</span><span class="p">,</span> <span class="nv">$api_key</span><span class="mf">.</span><span class="s2">":"</span><span class="mf">.</span><span class="nv">$api_secret</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPAUTH</span><span class="p">,</span> <span class="no">CURLAUTH_BASIC</span><span class="p">);</span>
+<span class="nb">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="no">CURLOPT_HTTPHEADER</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'Content-Type: application/json'</span><span class="p">));</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+<span class="nb">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$response</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://api.onlinefact.be/banktransactions/11/link"</span> <span class="se">\</span>
+  <span class="nt">-X</span> POST <span class="se">\</span>
+  <span class="nt">-u</span> <span class="s2">"api_key_here:api_secret_here"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  <span class="nt">-d</span> <span class="s1">'{"document_id":501,"amount":30.25}'</span>
+</code></pre></div>
+<blockquote>
+<p>The above command returns JSON structured like this:</p>
+</blockquote>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"KBC"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"iban"</span><span class="p">:</span><span class="s2">"BE11000000000001"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"bic"</span><span class="p">:</span><span class="s2">"KREDBEBB"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"currency"</span><span class="p">:</span><span class="s2">"EUR"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"institution_id"</span><span class="p">:</span><span class="s2">"KBC_KREDBEBB"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"active"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"balance"</span><span class="p">:</span><span class="s2">"1520.40"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"last_sync"</span><span class="p">:</span><span class="s2">"2026-10-17 08:12:03"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"connection_valid"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"total_transactions"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+         </span><span class="nl">"id"</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-10-05"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"-80.50"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"direction"</span><span class="p">:</span><span class="s2">"out"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"counterparty_name"</span><span class="p">:</span><span class="s2">"Supplier NV"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"counterparty_iban"</span><span class="p">:</span><span class="s2">"BE71096123456769"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"message"</span><span class="p">:</span><span class="s2">"Factuur 2026/15"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"reference"</span><span class="p">:</span><span class="s2">"narrative raw"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"open_amount"</span><span class="p">:</span><span class="s2">"50.25"</span><span class="p">,</span><span class="w">
+         </span><span class="nl">"payments"</span><span class="p">:[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+               </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">82</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"-30.25"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"date"</span><span class="p">:</span><span class="s2">"2026-10-05"</span><span class="p">,</span><span class="w">
+               </span><span class="nl">"documents"</span><span class="p">:[</span><span class="w">
+                  </span><span class="p">{</span><span class="w">
+                     </span><span class="nl">"document_id"</span><span class="p">:</span><span class="mi">501</span><span class="p">,</span><span class="w">
+                     </span><span class="nl">"document_type"</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="w">
+                     </span><span class="nl">"document_number"</span><span class="p">:</span><span class="s2">"AF2026/15"</span><span class="p">,</span><span class="w">
+                     </span><span class="nl">"amount"</span><span class="p">:</span><span class="s2">"80.50"</span><span class="w">
+                  </span><span class="p">}</span><span class="w">
+               </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+         </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>This endpoint links one bank transaction to one document. It creates a single bank-transfer payment (paytype <code>3</code>) and the link between that payment and the transaction. <code>open_amount</code> on the transaction goes down by the linked amount.</p>
+
+<p>The example above is transaction <code>11</code> after linking <code>30.25</code> to purchase invoice <code>501</code>. The response is the same bank-account object as <code>GET /banktransactions/11</code>. Because document type <code>11</code> stores the payment as a negative amount, the new payment is <code>-30.25</code> while the request sent a positive <code>amount</code>. <code>open_amount</code> is <code>abs(-80.50) - abs(-30.25) = 50.25</code>.</p>
+
+<p>For purchase invoices (document type <code>11</code>) and document types <code>4</code>, <code>9</code>, <code>10</code> and <code>16</code>, the payment amount is stored as a negative number. Always send <code>amount</code> as a positive number.</p>
+
+<p>When the linked amount pays the document in full, the document <code>paytype</code> becomes <code>3</code> and <code>paydate</code> is set. A partial amount leaves the document unpaid.</p>
+
+<p>Closed documents can also be linked.</p>
+
+<p><code>amount</code> is optional. When it is omitted, the linked amount is the smaller of the transaction&#39;s open amount and the document balance. The value is unsigned.</p>
+<h3 id='https-request-3'>HTTPS Request</h3>
+<p><code>POST https://api.onlinefact.be/banktransactions/&lt;ID&gt;/link</code></p>
+<h3 id='url-parameters-2'>URL Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>ID</td>
+<td>The ID of the bank transaction to link.</td>
+</tr>
+</tbody></table>
+<h3 id='body-parameters'>Body Parameters</h3>
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>document_id</td>
+<td>yes</td>
+<td>Document to link. The document must belong to the same account. Closed documents can be linked.</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>no</td>
+<td>Unsigned amount to link. Must be a positive number when sent. When omitted, the amount is the smaller of the transaction&#39;s open amount and the document balance.</td>
+</tr>
+</tbody></table>
+<h3 id='errors'>Errors</h3>
+<p>A failed request returns JSON:</p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="nl">"success"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"error"</span><span class="p">:</span><span class="s2">"document_id is required"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p>When the transaction is already linked to the document, the response also includes <code>payment_id</code>:</p>
+<div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+   </span><span class="nl">"success"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"error"</span><span class="p">:</span><span class="s2">"transaction is already linked to this document"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"payment_id"</span><span class="p">:</span><span class="mi">82</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>
+<p><code>error</code> is one of:</p>
+
+<table><thead>
+<tr>
+<th>Error</th>
+<th>When</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>document_id is required</td>
+<td><code>document_id</code> is missing from the body.</td>
+</tr>
+<tr>
+<td>document_id not found</td>
+<td>No document with this id exists on the account.</td>
+</tr>
+<tr>
+<td>bank transaction not found</td>
+<td>No bank transaction with this id exists on the account.</td>
+</tr>
+<tr>
+<td>transaction is already linked to this document</td>
+<td>This transaction is already linked to <code>document_id</code>. The response includes <code>payment_id</code> of the existing payment.</td>
+</tr>
+<tr>
+<td>transaction has no open amount</td>
+<td>The transaction <code>open_amount</code> is zero.</td>
+</tr>
+<tr>
+<td>document has no open amount</td>
+<td>The document has no remaining balance.</td>
+</tr>
+<tr>
+<td>amount must be a positive number</td>
+<td><code>amount</code> is zero, negative, or not a number.</td>
+</tr>
+<tr>
+<td>amount exceeds the open amount of the transaction</td>
+<td><code>amount</code> is higher than the transaction&#39;s open amount.</td>
+</tr>
+<tr>
+<td>amount exceeds the open amount of the document</td>
+<td><code>amount</code> is higher than the document balance.</td>
 </tr>
 </tbody></table>
 <h1 id='reports'>Reports</h1><h2 id='sale-totals-per-day'>Sale totals per day</h2><div class="highlight"><pre class="highlight php tab-php"><code>
