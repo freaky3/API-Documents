@@ -4,7 +4,7 @@ Parameter | Type | Description
 --------- | ------- | -----------
 document_id | integer | Unique identifier for the resource. `[read-only]`
 name | string | Name of documenttype.
-document_type | integer | 1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice.
+document_type | integer | see [Document types](#document-types).
 number | string | document number `[read-only]`
 document_date | data | date of document
 expiration_date | data | date of document
@@ -112,6 +112,32 @@ Parameter | Type | Description
 --------- | ------- | -----------
 {name of field} | string | value of field
 
+
+## Document types
+
+Every document has a `document_type`. The display name of a type can be renamed per account; the number is fixed.
+
+Number | Name (NL) | Name (EN) | Side | Stock effect
+------ | --------- | --------- | ---- | ------------
+1 | Offerte | Offer / quotation | Sales | none
+2 | Bestelbon klant | Client order | Sales | reserved while open (`closed = 0`)
+3 | Factuur | Invoice | Sales | out
+4 | Creditnota | Credit note | Sales | in
+5 | Leverbon | Delivery note | Sales | out, unless copied to another document
+8 | Kassaticket | Ticket (POS) | Sales | out, unless copied to another document
+9 | Prijsaanvraag (aankoop) * | Purchase quotation request * | Purchase | none
+10 | Bestelbon leverancier | Purchase order | Purchase | expected in while open (`closed = 0`)
+11 | Aankoopfactuur | Purchase invoice | Purchase | in
+12 | Aankoopcreditnota | Purchase credit note | Purchase | out
+14 | Inventaris / stockontvangst * | Inventory / stock receipt * | Purchase | in
+15 | Periodieke factuur | Recurring invoice (template) | Sales | none
+16 | Retourbon * | Return note * | Sales | in, unless copied to another document
+17 | Werkbon | Work order | Sales | reserved while open (`closed = 0`)
+99 | Kassa parking | Parked POS ticket | – | only for `POST /documents/`: sends the document to the POS as a parked ticket
+
+<aside class="notice">
+Types marked with * are not fully confirmed: their name is derived from how the code uses them. Types 6, 7 and 13 are reserved/unused and not documented.
+</aside>
 
 ## Get All Documents
 
@@ -393,7 +419,7 @@ Parameter | Default | Description
 --------- | ------- | -----------
 min_date | date | Return documents from this start date (YYYY-MM-DD). When both `min_date` and `max_date` are set, the range is at most 14 days.
 max_date | date | Return documents until this end date (YYYY-MM-DD). When both `min_date` and `max_date` are set, the range is at most 14 days.
-document_type | integer |1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice
+document_type | integer | see [Document types](#document-types)
 from_document_id | integer | Return documents from this document_id
 from_datemodified | integer | Return documents from this timestamp `unix timestamp format`
 filter | string | Filter result with string data *(customer reference/name)*
@@ -762,7 +788,7 @@ Parameter | Description
 --------- | ------- 
 document_date | Document date
 document_time | Document time
-document_type | 1 = offer, 2 = client order, 3 = invoice, 4 = creditnote, 5 = deliverynote, 8 = ticket, 11 = purchase invoice, 99 = Kassa parking
+document_type | see [Document types](#document-types) (99 = Kassa parking)
 reference | reference of document
 sendwithpeppol| 1 = submit the document with peppol to customer (only document_type 3 and 4)
 customer_id | ID of customer for this document
