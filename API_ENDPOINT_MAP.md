@@ -33,7 +33,7 @@ Doel: centrale referentie om API-implementatie en Slate-documentatie synchroon t
   - `POST /customers/`
   - `PUT /customers/<ID>`
   - `DELETE /customers/<ID>`
-- `vouchers`
+- `vouchers` (draft, nog niet uitgerold; geen kassa-API in Slate)
   - `GET /vouchers/`
   - `GET /vouchers/<ID>`
   - `POST /vouchers/`
@@ -108,6 +108,18 @@ Deze afspraken zijn expliciet vastgelegd en moeten consistent blijven tussen cod
 - `GET /banktransactions/<ID>` geeft één rekeningobject met alleen die transactie.
 - `open_amount` is unsigned: absolute waarde van `amount` min de absolute bedragen van de gekoppelde betalingen.
 - `GET /documents/`: `document_type` 11 is een aankoopfactuur. Als zowel `min_date` als `max_date` gezet zijn, is het bereik maximaal 14 dagen.
+
+## Vouchers owner (draft, nog niet uitgerold)
+
+Bron: `docs/klimcafe-voucher-owner-contract.md` op `cursor/klimcafe-voucher-owner-fc71`. Alleen de publieke REST staat in `source/includes/_vouchers.md`. Geen `kassa.php`.
+
+- Bestaande anonieme bonnen blijven `customer_id: null` en werken via de barcode. Documenten worden niet aangepast.
+- Migratie `database/migrations/2026-11-06_vouchers_custid.sql` is verplicht vóór eigenaar-schrijven, één keer per tenantdatabase met `vouchers`. De kolom is nullable en wordt niet gevuld. Zonder kolom: `POST`/`PUT` met `customer_id` antwoordt `voucher_owner_not_migrated` (POST schrijft de bon niet, PUT schrijft de eigenaar niet). Anonieme calls blijven werken.
+- Daarna moeten `vouchers` en `voucher_transactions` InnoDB zijn. Zo niet, dan stopt het script met `InnoDB required on vouchers and voucher_transactions; custid column is kept` en een exit code anders dan 0. De kolom blijft staan. Het script zet de engine niet om.
+- `customer_id` weglaten, `null`, `""` of `0` op POST houdt de bon anoniem. Op PUT wist `null` of `0` de eigenaar; het veld weglaten laat de eigenaar staan. Onbekend id, id van een ander account, of relatie `REG`: `customer_id not found`. Op POST wordt de bon dan niet aangemaakt.
+- `GET /vouchers/` accepteert `customer_id` (onbekend id is geen lege lijst) en `open=1` (saldo > 0). `limit` en `page` gelden na `open=1`.
+- Een negatief `amount` op `PUT` wordt alleen geweigerd als beide tabellen InnoDB zijn en het saldo daarna onder 0 zou gaan (`insufficient voucher balance`, niets geboekt, ook geen kleinere beweging en geen eigenaarwijziging in hetzelfde verzoek). Zonder InnoDB blijft de oude insert en mag het saldo onder nul. Een negatief `amount` op POST wordt niet geboekt.
+- Deze draft lost dubbele afboeking op een kassaticket niet op. De kassa kan het saldo nog onder nul brengen. Een weigering vóór elke schrijfactie op dat pad is een release blocker en is niet aangesloten. De PUT-lock dekt geen kassaticket.
 
 ## Release-gate voor API changes
 
