@@ -3229,6 +3229,11 @@ When you create a new API key and secret you have to write down the API secret b
 <td>date when voucher is created. <code>[read-only]</code></td>
 </tr>
 <tr>
+<td>customer_id</td>
+<td>integer</td>
+<td>Relation this voucher belongs to (<code>custumers.custid</code>). <code>0</code> means no relation.</td>
+</tr>
+<tr>
 <td>amount</td>
 <td>decimal</td>
 <td>current value of the voucher.</td>
@@ -3306,6 +3311,7 @@ When you create a new API key and secret you have to write down the API secret b
       </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"2000000015606"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Tegoedbon"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"datecreated"</span><span class="p">:</span><span class="s2">"2022-11-03"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"customer_id"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"amount"</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="w">
       </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
          </span><span class="p">{</span><span class="w">
@@ -3331,6 +3337,7 @@ When you create a new API key and secret you have to write down the API secret b
       </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"2000000015590"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Cadeaubon"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"datecreated"</span><span class="p">:</span><span class="s2">"2022-11-03"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"customer_id"</span><span class="p">:</span><span class="s2">"23"</span><span class="p">,</span><span class="w">
       </span><span class="nl">"amount"</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="w">
       </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
          </span><span class="p">{</span><span class="w">
@@ -3372,6 +3379,11 @@ When you create a new API key and secret you have to write down the API secret b
 <td>search by barcode</td>
 </tr>
 <tr>
+<td>customer_id</td>
+<td></td>
+<td>only vouchers linked to this relation. <code>0</code> returns vouchers without a relation.</td>
+</tr>
+<tr>
 <td>from_datemodified</td>
 <td></td>
 <td>vouchers changed sinds this timestamp</td>
@@ -3402,6 +3414,7 @@ When you create a new API key and secret you have to write down the API secret b
     </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"2000000015590"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Cadeaubon"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"datecreated"</span><span class="p">:</span><span class="s2">"2022-11-03"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"customer_id"</span><span class="p">:</span><span class="s2">"23"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"amount"</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="w">
     </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
         </span><span class="p">{</span><span class="w">
@@ -3438,6 +3451,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
                   "name":"Gift Voucher",
                   "amount":25.00,
+                  "customer_id":23,
                   "comment":"webshop order #123"
                }'</span><span class="p">;</span> <span class="c1">//JSON String</span>
 
@@ -3460,6 +3474,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
   <span class="nt">-d</span> <span class="s1">'{
          "name":"Gift Voucher",
          "amount":25.00,
+         "customer_id":23,
          "comment":"webshop order #123"
       }'</span>
 </code></pre></div>
@@ -3471,6 +3486,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
    </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"2000000015606"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Gift Voucher"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"datecreated"</span><span class="p">:</span><span class="s2">"2022-11-03"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"customer_id"</span><span class="p">:</span><span class="s2">"23"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"amount"</span><span class="p">:</span><span class="mf">25.00</span><span class="p">,</span><span class="w">
    </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
       </span><span class="p">{</span><span class="w">
@@ -3507,6 +3523,10 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <td>barcode of the voucher (not mandatory)</td>
 </tr>
 <tr>
+<td>customer_id</td>
+<td>relation id (not mandatory). Unknown id returns <code>customer_id not found</code> and does not create the voucher. Relation <code>REG</code> returns <code>customer_id not allowed</code> and does not create the voucher. <code>0</code> or omitted leaves the voucher without a relation.</td>
+</tr>
+<tr>
 <td>comment</td>
 <td>extra comment of the transcation</td>
 </tr>
@@ -3514,6 +3534,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 <h2 id='update-a-voucher'>Update a Voucher</h2><div class="highlight"><pre class="highlight php tab-php"><code>
 <span class="nv">$data_string</span> <span class="o">=</span> <span class="s1">'{
                   "amount":-10.00,
+                  "customer_id":23,
                   "comment":"Webshop order #150"
                }'</span><span class="p">;</span> <span class="c1">//JSON String</span>
 
@@ -3535,6 +3556,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
   <span class="nt">-d</span> <span class="s1">'{
          "amount":-10.00,
+         "customer_id":23,
          "comment":"Webshop order #150"
       }'</span>
 </code></pre></div>
@@ -3546,6 +3568,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
    </span><span class="nl">"barcode"</span><span class="p">:</span><span class="s2">"2000000015606"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"name"</span><span class="p">:</span><span class="s2">"Gift Voucher"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"datecreated"</span><span class="p">:</span><span class="s2">"2022-11-03"</span><span class="p">,</span><span class="w">
+   </span><span class="nl">"customer_id"</span><span class="p">:</span><span class="s2">"23"</span><span class="p">,</span><span class="w">
    </span><span class="nl">"amount"</span><span class="p">:</span><span class="mf">15.00</span><span class="p">,</span><span class="w">
    </span><span class="nl">"transactions"</span><span class="p">:[</span><span class="w">
       </span><span class="p">{</span><span class="w">
@@ -3583,7 +3606,11 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 </tr>
 <tr>
 <td>amount</td>
-<td>amount of change + or -</td>
+<td>amount of change + or -. A transaction is added only when <code>amount</code> is present.</td>
+</tr>
+<tr>
+<td>customer_id</td>
+<td>set or clear the relation. <code>0</code> removes the relation. Omit the field to leave it unchanged. Unknown id returns <code>customer_id not found</code>. Relation <code>REG</code> returns <code>customer_id not allowed</code> and is not stored.</td>
 </tr>
 <tr>
 <td>comment</td>
@@ -6010,6 +6037,8 @@ Authenticate with HTTP Basic authentication: the API key is the username and the
 <p>For purchase invoices (document type <code>11</code>) and document types <code>4</code>, <code>9</code>, <code>10</code> and <code>16</code>, the payment amount is stored as a negative number. Always send <code>amount</code> as a positive number.</p>
 
 <p>When the linked amount pays the document in full, the document <code>paytype</code> becomes <code>3</code> and <code>paydate</code> is set. A partial amount leaves the document unpaid.</p>
+
+<p>When the link succeeds and the document belongs to a relation other than <code>REG</code>, that relation&#39;s IBAN is replaced by the counterparty IBAN of the transaction. An IBAN that was already stored is overwritten. An empty counterparty IBAN does not clear the relation.</p>
 
 <p>Closed documents can also be linked.</p>
 
