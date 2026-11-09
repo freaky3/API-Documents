@@ -328,6 +328,8 @@ For purchase invoices (document type `11`) and document types `4`, `9`, `10` and
 
 When the linked amount pays the document in full, the document `paytype` becomes `3` and `paydate` is set. A partial amount leaves the document unpaid.
 
+When the link succeeds and the document belongs to a relation other than `REG`, that relation's IBAN is replaced by the counterparty IBAN of the transaction. An IBAN that was already stored is overwritten. An empty counterparty IBAN does not clear the relation.
+
 Closed documents can also be linked.
 
 `amount` is optional. When it is omitted, the linked amount is the smaller of the transaction's open amount and the document balance. The value is unsigned.

@@ -6,6 +6,7 @@ voucher_id | integer | Unique identifier for the resource. `[read-only]`
 barcode | string | Barcode of the voucher.
 name | string | name of the voucher.
 datecreated | date | date when voucher is created. `[read-only]` 
+customer_id | integer | Relation this voucher belongs to (`custumers.custid`). `0` means no relation.
 amount | decimal| current value of the voucher.
 transactions | array |
 
@@ -53,6 +54,7 @@ curl "https://api.onlinefact.be/vouchers" \
       "barcode":"2000000015606",
       "name":"Tegoedbon",
       "datecreated":"2022-11-03",
+      "customer_id":"0",
       "amount":0,
       "transactions":[
          {
@@ -78,6 +80,7 @@ curl "https://api.onlinefact.be/vouchers" \
       "barcode":"2000000015590",
       "name":"Cadeaubon",
       "datecreated":"2022-11-03",
+      "customer_id":"23",
       "amount":50,
       "transactions":[
          {
@@ -106,6 +109,7 @@ Parameter | Default | Description
 limit | 100 | limit results (max 1000).
 page | 1 | page number of result.
 barcode | | search by barcode
+customer_id | | only vouchers linked to this relation. `0` returns vouchers without a relation.
 from_datemodified || vouchers changed sinds this timestamp
 
 ## Get a Specific Voucher
@@ -140,6 +144,7 @@ curl "https://api.onlinefact.be/vouchers/59/" \
     "barcode":"2000000015590",
     "name":"Cadeaubon",
     "datecreated":"2022-11-03",
+    "customer_id":"23",
     "amount":50,
     "transactions":[
         {
@@ -177,6 +182,7 @@ Get voucher by barcode: https://api.onlinefact.be/vouchers/?barcode=200000001560
 $data_string = '{
                   "name":"Gift Voucher",
                   "amount":25.00,
+                  "customer_id":23,
                   "comment":"webshop order #123"
                }'; //JSON String
 
@@ -202,6 +208,7 @@ curl "https://api.onlinefact.be/vouchers/" \
   -d '{
          "name":"Gift Voucher",
          "amount":25.00,
+         "customer_id":23,
          "comment":"webshop order #123"
       }'
 ```
@@ -214,6 +221,7 @@ curl "https://api.onlinefact.be/vouchers/" \
    "barcode":"2000000015606",
    "name":"Gift Voucher",
    "datecreated":"2022-11-03",
+   "customer_id":"23",
    "amount":25.00,
    "transactions":[
       {
@@ -241,6 +249,7 @@ Parameter | Description
 name | name of the voucher.
 amount | value of the voucher
 barcode | barcode of the voucher (not mandatory)
+customer_id | relation id (not mandatory). Unknown id returns `customer_id not found` and does not create the voucher. Relation `REG` returns `customer_id not allowed` and does not create the voucher. `0` or omitted leaves the voucher without a relation.
 comment | extra comment of the transcation
 
 ## Update a Voucher
@@ -249,6 +258,7 @@ comment | extra comment of the transcation
 
 $data_string = '{
                   "amount":-10.00,
+                  "customer_id":23,
                   "comment":"Webshop order #150"
                }'; //JSON String
 
@@ -273,6 +283,7 @@ curl "https://api.onlinefact.be/vouchers/23/" \
   -H "Content-Type: application/json" \
   -d '{
          "amount":-10.00,
+         "customer_id":23,
          "comment":"Webshop order #150"
       }'
 ```
@@ -285,6 +296,7 @@ curl "https://api.onlinefact.be/vouchers/23/" \
    "barcode":"2000000015606",
    "name":"Gift Voucher",
    "datecreated":"2022-11-03",
+   "customer_id":"23",
    "amount":15.00,
    "transactions":[
       {
@@ -318,7 +330,8 @@ This endpoint updates a specific voucher.
 Parameter | Description
 --------- | -----------
 ID | The ID of the voucher to update
-amount | amount of change + or -
+amount | amount of change + or -. A transaction is added only when `amount` is present.
+customer_id | set or clear the relation. `0` removes the relation. Omit the field to leave it unchanged. Unknown id returns `customer_id not found`. Relation `REG` returns `customer_id not allowed` and is not stored.
 comment | extra comment of the transcation
 
 ## Delete a Voucher
