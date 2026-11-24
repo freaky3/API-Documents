@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-11-24 **new** — Producten: `multi` heeft `order_unit`. Hoogstens één multi is de besteleenheid.
 - 2026-11-09 **update** — `/vouchers/` weigert relatie `REG` met `customer_id not allowed`.
 - 2026-11-09 **new** — `/vouchers/` kan via `customer_id` aan een relatie gekoppeld worden. De lijst is daar ook op te filteren.
 - 2026-11-04 **update** — `POST /banktransactions/{id}/link` vervangt het IBAN van de relatie door het tegenrekeningnummer. Een relatie `REG` en een lege tegenpartij blijven ongemoeid.

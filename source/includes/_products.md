@@ -82,6 +82,7 @@ Parameter | Type | Description
 unit | string | Unit of the multi-pack (e.g. `PACK`, `DOOS`, ...)
 quantity | decimal | Quantity of base units in the multi-pack (e.g. `6`)
 barcode | string | Barcode of the multi-pack
+order_unit | boolean | `1` marks this multi as the order unit. Only one multi per product.
 
 **Products - attributes**
 
@@ -214,7 +215,7 @@ curl "https://api.onlinefact.be/products" \
       "80723028"
     ],
     "multi": [
-      { "unit": "PACK", "quantity": 6, "barcode": "1451902048154" }
+      { "unit": "PACK", "quantity": 6, "barcode": "1451902048154", "order_unit": 1 }
     ],
     "languages": {
       "NL": {
@@ -473,7 +474,7 @@ curl "https://api.onlinefact.be/products/8/" \
     "155"
   ],
   "multi": [
-    { "unit": "PACK", "quantity": 6, "barcode": "1451902048154" }
+    { "unit": "PACK", "quantity": 6, "barcode": "1451902048154", "order_unit": 1 }
   ],
   "barcodes": [
     "80723028"
