@@ -875,6 +875,11 @@ When you create a new API key and secret you have to write down the API secret b
 <td>string</td>
 <td>Barcode of the multi-pack</td>
 </tr>
+<tr>
+<td>order_unit</td>
+<td>boolean</td>
+<td><code>1</code> marks this multi as the order unit. Only one multi per product.</td>
+</tr>
 </tbody></table>
 
 <p><strong>Products - attributes</strong></p>
@@ -1145,7 +1150,7 @@ When you create a new API key and secret you have to write down the API secret b
       </span><span class="s2">"80723028"</span><span class="w">
     </span><span class="p">],</span><span class="w">
     </span><span class="nl">"multi"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w"> </span><span class="nl">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PACK"</span><span class="p">,</span><span class="w"> </span><span class="nl">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nl">"barcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1451902048154"</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">{</span><span class="w"> </span><span class="nl">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PACK"</span><span class="p">,</span><span class="w"> </span><span class="nl">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nl">"barcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1451902048154"</span><span class="p">,</span><span class="w"> </span><span class="nl">"order_unit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}</span><span class="w">
     </span><span class="p">],</span><span class="w">
     </span><span class="nl">"languages"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"NL"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1448,7 +1453,7 @@ When you create a new API key and secret you have to write down the API secret b
     </span><span class="s2">"155"</span><span class="w">
   </span><span class="p">],</span><span class="w">
   </span><span class="nl">"multi"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w"> </span><span class="nl">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PACK"</span><span class="p">,</span><span class="w"> </span><span class="nl">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nl">"barcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1451902048154"</span><span class="w"> </span><span class="p">}</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nl">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PACK"</span><span class="p">,</span><span class="w"> </span><span class="nl">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="nl">"barcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1451902048154"</span><span class="p">,</span><span class="w"> </span><span class="nl">"order_unit"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}</span><span class="w">
   </span><span class="p">],</span><span class="w">
   </span><span class="nl">"barcodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="s2">"80723028"</span><span class="w">
